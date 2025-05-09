@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  contact   Contact[]
+}
+
+model Contact {
+  id          String      @id @default(cuid())
+  email       String
+  companyName String
+  platform    String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  emailsSent  EmailSent[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model EmailSent {
+  id      String   @id @default(cuid())
+  subject String
+  body    String
+  sentAt  DateTime @default(now())
+
+  contactId   String
+  contact     Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  attachments Attachment[]
+
+  @@index([contactId])
+}
+
+model Attachment {
+  id          String    @id @default(cuid())
+  fileName    String
+  fileUrl     String // Reference to Supabase storage
+  fileSize    Int? // Optional file size in bytes
+  createdAt   DateTime  @default(now())
+  emailSentId String
+  emailSent   EmailSent @relation(fields: [emailSentId], references: [id], onDelete: Cascade)
+
+  @@index([emailSentId])
+}
