@@ -10,49 +10,24 @@ function page() {
 	const [error, setError] = React.useState<string | null>(null);
 	const [loading, setLoading] = React.useState(false);
 
-	// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-	//   e.preventDefault();
-
-	//   try {
-	//     const res = await fetch(`${BACKEND_URL}/user/register`, {
-	//       method: "POST",
-	//       headers: {
-	//         "Content-Type": "application/json",
-	//       },
-	//       body: JSON.stringify({ email, password, username }),
-	//     });
-
-	//     const data = await res.json();
-
-	//     if (!res.ok) {
-	//       throw new Error(data.error || "Registration failed");
-	//     }
-	//     console.log(data);
-
-	//     if (data.token) {
-	//       setToken(data.token);
-	//       toast.success("Registration successful! Please log in.");
-	//       router.push("/");
-	//     }
-	//   } catch (error) {
-	//     console.error("Registration error:", error);
-	//     toast.error(
-	//       error instanceof Error ? error.message : "Registration failed"
-	//     );
-	//   }
-	// };
-
 	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setError(null);
 		setLoading(true);
 		try {
-			const user = await register(new FormData(e.currentTarget));
+			const result = await register(new FormData(e.currentTarget));
+			if (!result.success) {
+				toast.error(result.message);
+				return;
+			}
+
 			toast.success('Registration successful!');
 			router.push('/sign-in');
 		} catch (err: any) {
-			setError(err.message || 'Registration failed');
-			toast.error(err.message || 'Registration failed');
+			if (err instanceof Error) {
+				toast.error(err.message);
+			}
+			toast.error(err || 'Registration failed');
 		} finally {
 			setLoading(false);
 		}

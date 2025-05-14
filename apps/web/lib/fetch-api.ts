@@ -121,6 +121,10 @@ export async function fetchAPI<
 		};
 	} catch (error) {
 		const errorInstance = error as Error;
+		console.log('Error in fetchAPI:', errorInstance);
+		if (throwOnError) {
+			throw errorInstance;
+		}
 		return {
 			success: false,
 			message: errorInstance.message,

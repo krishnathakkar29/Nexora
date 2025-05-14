@@ -10,43 +10,24 @@ function page() {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 
-	// const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-	//   e.preventDefault();
-	//   try {
-	//     const res = await fetch(`${BACKEND_URL}/user/login`, {
-	//       method: "POST",
-	//       headers: {
-	//         "Content-Type": "application/json",
-	//       },
-	//       body: JSON.stringify({ email, password }),
-	//     });
-
-	//     const result = await res.json();
-	//     if (!res.ok) {
-	//       throw new Error(result.error || "Login failed");
-	//     }
-	//     if (result.data.token) {
-	//       setToken(result.data.token);
-	//       toast.success("Login Successful!");
-	//       router.push("/");
-	//     }
-	//   } catch (error) {
-	//     console.error("Login error:", error);
-	//     toast.error(error instanceof Error ? error.message : "Login failed");
-	//   }
-	// };
-
 	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setError(null);
 		setLoading(true);
 		try {
-			const user = await login(new FormData(e.currentTarget));
+			const result = await login(new FormData(e.currentTarget));
+
+			if (!result.success) {
+				toast.error(result.message);
+				return;
+			}
 
 			toast.success('Login successful!');
 			router.push('/dashboard');
 		} catch (err: any) {
-			setError(err || 'Login failed');
+			if (err instanceof Error) {
+				toast.error(err.message);
+			}
 			toast.error(err || 'Login failed');
 		} finally {
 			setLoading(false);

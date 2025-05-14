@@ -24,6 +24,7 @@ app.use(
 app.use(morgan('dev'));
 
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/mail', userRouter);
 app.use(errorMiddleware);
 app.listen(PORT, () => {
 	console.log(`server is running on port ${PORT}`);

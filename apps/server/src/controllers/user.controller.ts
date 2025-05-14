@@ -7,7 +7,6 @@ import jwt from 'jsonwebtoken';
 import { prisma } from '@workspace/db';
 
 export const register = AsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-	console.log('req.body mein auhaobsd afd ');
 	const { username, email, password } = req.body;
 	console.log(email, password, username);
 	if (!username || !email || !password) {

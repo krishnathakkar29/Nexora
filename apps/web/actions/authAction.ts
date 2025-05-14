@@ -3,67 +3,82 @@ import { fetchAPI } from '@/lib/fetch-api';
 import { COOKIE_NAME } from '@workspace/common/config';
 import { cookies } from 'next/headers';
 
-
 export async function register(formData: FormData) {
-	const username = formData.get('username') as string;
-	const email = formData.get('email') as string;
-	const password = formData.get('password') as string;
-	console.log({ username, email, password });
-	const res = await fetchAPI({
-		url: '/user/register',
-		method: 'POST',
-		body: {
-			username,
-			email,
-			password,
-		},
-		throwOnError: true,
-		requireAuth: false,
-	});
+	try {
+		const username = formData.get('username') as string;
+		const email = formData.get('email') as string;
+		const password = formData.get('password') as string;
+		console.log({ username, email, password });
+		const res = await fetchAPI({
+			url: '/user/register',
+			method: 'POST',
+			body: {
+				username,
+				email,
+				password,
+			},
+			throwOnError: true,
+			requireAuth: false,
+		});
 
-	console.log('res', res);
+		if (!res.success) {
+			throw new Error(res.message);
+		}
 
-	if (!res.success) throw new Error(res.message);
+		(await cookies()).set({
+			name: COOKIE_NAME,
+			value: res.data.token!,
+			httpOnly: true,
+			maxAge: 24 * 60 * 60,
+			path: '/',
+			//  secure: process.env.NODE_ENV === 'production',
+			// sameSite: 'lax',
+		});
 
-	(await cookies()).set({
-		name: COOKIE_NAME,
-		value: res.data.token!,
-		httpOnly: true,
-		maxAge: 24 * 60 * 60,
-		path: '/',
-		//  secure: process.env.NODE_ENV === 'production',
-		// sameSite: 'lax',
-	});
-
-	return res.data.user;
+		return res.data.user;
+	} catch (error) {
+		console.error('Registration error:', error);
+		return {
+			success: false,
+			message: error instanceof Error ? error.message : 'Registration failed',
+		};
+	}
 }
 
 export async function login(formData: FormData) {
-	const email = formData.get('email') as string;
-	const password = formData.get('password') as string;
-	const res = await fetchAPI({
-		url: '/user/login',
-		method: 'POST',
-		body: { email, password },
-		throwOnError: true,
-		requireAuth: false,
-	});
+	try {
+		const email = formData.get('email') as string;
+		const password = formData.get('password') as string;
+		const res = await fetchAPI({
+			url: '/user/login',
+			method: 'POST',
+			body: { email, password },
+			throwOnError: true,
+			requireAuth: false,
+		});
 
-	if (!res.success) {
-		throw new Error(res.message);
+		if (!res.success) {
+			throw new Error(res.message);
+		}
+
+		(await cookies()).set({
+			name: COOKIE_NAME,
+			value: res.data.token!,
+			httpOnly: true,
+			maxAge: 24 * 60 * 60,
+			path: '/',
+			// secure: process.env.NODE_ENV === 'production',
+			// sameSite: 'lax',
+		});
+
+		return res.data.user;
+	} catch (error) {
+		console.error('Login error:', error);
+		return {
+			success: false,
+			message: error instanceof Error ? error.message : 'Login failed',
+		};
 	}
-
-	(await cookies()).set({
-		name: COOKIE_NAME,
-		value: res.data.token!,
-		httpOnly: true,
-		maxAge: 24 * 60 * 60,
-		path: '/',
-		// secure: process.env.NODE_ENV === 'production',
-		// sameSite: 'lax',
-	});
-
-	return res.data.user;
 }
 
 export async function logout() {
