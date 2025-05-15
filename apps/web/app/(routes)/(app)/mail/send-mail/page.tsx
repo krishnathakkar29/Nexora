@@ -11,7 +11,8 @@ import MDEditor from '@uiw/react-md-editor';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { sendEmailSchema } from "@workspace/common/zod/schema/mail";
+import { sendEmailSchema } from '@workspace/common/zod/schema/mail';
+import { fetchAPI } from '@/lib/fetch-api';
 function page() {
 	const [files, setFiles] = useState<File[]>([]);
 	const [isMarkdown, setIsMarkdown] = useState(false);
@@ -51,7 +52,39 @@ function page() {
 	};
 
 	const onSubmit = async (data: any) => {
-		console.log('Form submitted:', data);
+		try {
+			console.log('Form submitted:', data);
+
+			const formData = new FormData();
+			data.recipients.forEach((recipient: { email: string }) => {
+				formData.append('recipients', recipient.email);
+			});
+
+			const formattedBody = data.body.replace(/\n/g, '<br>');
+			formData.append('subject', data.subject);
+			formData.append('platform', data.platform);
+			formData.append('companyName', data.companyName);
+			formData.append('body', formattedBody);
+
+			files.forEach((file) => {
+				formData.append('files', file);
+			});
+
+			const formDataEntries = Array.from(formData.entries());
+			console.log('Form data contents:', formDataEntries);
+
+			const response = await fetchAPI({
+				url: '/mail/send',
+				method: 'POST',
+				body: formData,
+				throwOnError: true,
+				requireAuth: false,
+			});
+
+			console.log('Response:', response);
+		} catch (error) {
+			console.error('Error submitting form:', error);
+		}
 	};
 	return (
 		<div className="w-full py-6 px-8 md:px-16 mx-auto  animate-in fade-in-50">

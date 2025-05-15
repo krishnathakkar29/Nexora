@@ -5,6 +5,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { errorMiddleware } from './middlewares/error.js';
 import userRouter from './routes/user.routes.js';
+import mailRouter from './routes/mail.routes.js';
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
 	cors({
-		origin: ' * ',
+		origin: 'http://localhost:3000',
 		credentials: true,
 		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 	}),
@@ -24,7 +25,7 @@ app.use(
 app.use(morgan('dev'));
 
 app.use('/api/v1/user', userRouter);
-app.use('/api/v1/mail', userRouter);
+app.use('/api/v1/mail', mailRouter);
 app.use(errorMiddleware);
 app.listen(PORT, () => {
 	console.log(`server is running on port ${PORT}`);

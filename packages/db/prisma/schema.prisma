@@ -26,9 +26,8 @@ model User {
 
 model Contact {
   id          String      @id @default(cuid())
-  email       String
+  email       String      @unique
   companyName String
-  platform    String
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   emailsSent  EmailSent[]
@@ -40,10 +39,13 @@ model Contact {
 }
 
 model EmailSent {
-  id      String   @id @default(cuid())
-  subject String
-  body    String
-  sentAt  DateTime @default(now())
+  id       String   @id @default(cuid())
+  subject  String
+  body     String
+  sentAt   DateTime @default(now())
+  platform String?
+
+  status EmailStatus @default(PENDING)
 
   contactId   String
   contact     Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
@@ -55,11 +57,18 @@ model EmailSent {
 model Attachment {
   id          String    @id @default(cuid())
   fileName    String
-  fileUrl     String // Reference to Supabase storage
-  fileSize    Int? // Optional file size in bytes
+  fileUrl     String
+  fileKey     String
+  fileSize    Int?
   createdAt   DateTime  @default(now())
   emailSentId String
   emailSent   EmailSent @relation(fields: [emailSentId], references: [id], onDelete: Cascade)
 
   @@index([emailSentId])
+}
+
+enum EmailStatus {
+  PENDING
+  DONE
+  FAILED
 }
