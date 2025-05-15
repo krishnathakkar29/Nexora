@@ -35,7 +35,7 @@ export async function register(formData: FormData) {
 			// sameSite: 'lax',
 		});
 
-		return res.data.user;
+		return res;
 	} catch (error) {
 		console.error('Registration error:', error);
 		return {
@@ -71,7 +71,7 @@ export async function login(formData: FormData) {
 			// sameSite: 'lax',
 		});
 
-		return res.data.user;
+		return res;
 	} catch (error) {
 		console.error('Login error:', error);
 		return {
