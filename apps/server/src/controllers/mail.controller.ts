@@ -1,13 +1,14 @@
-import { emailQueue, mailQueueName } from '@/job/mail-job.js';
 import { AsyncHandler } from '@/middlewares/error.js';
 import ErrorHandler from '@/utils/errorHandler.js';
 import { s3Upload } from '@/utils/s3.js';
+import { emailQueue, mailQueueName } from '@workspace/common/mail-queue';
 import { prisma } from '@workspace/db';
 
 export const sendMail = AsyncHandler(async (req, res, next) => {
 	const { recipients, subject, platform, companyName, body: emailBody } = req.body;
+	let recipientsArr: string[] = Array.isArray(recipients) ? recipients : [recipients];
 	const files = req.files;
-	console.log('usereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', req.user);
+
 	let uploadedFiles: {
 		fileKey: string;
 		fileName: string;
@@ -27,7 +28,7 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 	}
 
 	const emailSentRecords = await Promise.all(
-		recipients.map(async (recipient: string) => {
+		recipientsArr.map(async (recipient: string) => {
 			let contact = await prisma.contact.findFirst({
 				where: { email: recipient },
 			});
@@ -76,6 +77,7 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 				body: emailBody,
 				attachmentIds,
 			});
+			console.count('itthere');
 
 			return emailSent;
 		}),

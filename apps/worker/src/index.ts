@@ -1,19 +1,6 @@
-import { redisConnection } from '@/utils/redis.js';
-import { Job, Queue, Worker } from 'bullmq';
-
-export const mailQueueName = 'emailQueue';
-
-export const emailQueue = new Queue(mailQueueName, {
-	connection: redisConnection,
-	defaultJobOptions: {
-		delay: 0,
-		attempts: 3,
-		backoff: {
-			type: 'exponential',
-			delay: 1000,
-		},
-	},
-});
+import { mailQueueName } from '@workspace/common/mail-queue';
+import { Job, Worker } from 'bullmq';
+import 'dotenv/config';
 
 export const emailWorker = new Worker(
 	mailQueueName,
@@ -24,7 +11,10 @@ export const emailWorker = new Worker(
 		// … your email-sending logic here …
 	},
 	{
-		connection: redisConnection,
+		connection: {
+			host: process.env.REDIS_HOST,
+			port: Number(process.env.REDIS_PORT),
+		},
 	},
 );
 
