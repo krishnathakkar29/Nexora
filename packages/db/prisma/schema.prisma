@@ -15,13 +15,14 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
+  id        String      @id @default(cuid())
   username  String
-  email     String    @unique
+  email     String      @unique
   password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   contact   Contact[]
+  emailSent EmailSent[]
 }
 
 model Contact {
@@ -38,7 +39,7 @@ model Contact {
   @@index([userId])
 }
 
-model EmailSent {
+  model EmailSent {
   id       String   @id @default(cuid())
   subject  String
   body     String
@@ -47,8 +48,11 @@ model EmailSent {
 
   status EmailStatus @default(PENDING)
 
-  contactId   String
-  contact     Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   attachments Attachment[]
 
   @@index([contactId])
