@@ -6,13 +6,21 @@ export const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
 	err.message ||= 'Internal Server Error';
 	err.statusCode = err.statusCode || 500;
 
+	let prismaError = false;
+
+	console.log(err);
+
+	if (err.name.startsWith('Prisma')) {
+		prismaError = true;
+	}
+
 	const response: {
 		success: boolean;
 		message: string;
 		error?: ErrorHandler;
 	} = {
 		success: false,
-		message: err.message,
+		message: prismaError ? 'Prisma Query Error!' : err.message,
 	};
 
 	if (envMode === 'DEVELOPMENT') {

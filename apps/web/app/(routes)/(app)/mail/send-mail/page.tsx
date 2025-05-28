@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sendEmailSchema } from '@workspace/common/zod/schema/mail';
 import { fetchAPI } from '@/lib/fetch-api';
+import { toast } from 'sonner';
 function page() {
 	const [files, setFiles] = useState<File[]>([]);
 	const [isMarkdown, setIsMarkdown] = useState(false);
@@ -71,7 +72,7 @@ function page() {
 			});
 
 			const formDataEntries = Array.from(formData.entries());
-			console.log('Form data contents:', formDataEntries);
+			// console.log('Form data contents:', formDataEntries);
 
 			const response = await fetchAPI({
 				url: '/mail/send',
@@ -82,7 +83,14 @@ function page() {
 			});
 
 			console.log('Response:', response);
+			if (!response.success) {
+				toast.error(response.message);
+				return;
+			}
+
+			toast.success(response.message);
 		} catch (error) {
+			console.error('Error submitting form:', error);
 			console.error('Error submitting form:', error);
 		}
 	};

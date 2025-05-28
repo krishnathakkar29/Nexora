@@ -1,8 +1,9 @@
 'use server';
-
 import { BACKEND_URL } from '@/config/config';
 import { COOKIE_NAME } from '@workspace/common/config';
 import { cookies } from 'next/headers';
+// import { COOKIE_NAME } from '@workspace/common/config';
+// import { cookies } from 'next/headers';
 
 export type TNoParams = Record<string, never>;
 
@@ -41,7 +42,7 @@ type SuccessResponse<DataT> = {
 
 type FetchAPIResult<DataT> = ErrorResponse | SuccessResponse<DataT>;
 
-export async function fetchAPI<
+export async function fetchAPIServer<
 	ResponseDataT = any,
 	ErrorBodyT = { success: false; message: string; error?: unknown },
 	UrlParamsT = TNoParams,
@@ -59,10 +60,9 @@ export async function fetchAPI<
 		body = {},
 		headers = {},
 		// onError,
-		throwOnError,
-		requireAuth = false,
+		throwOnError = false,
+		requireAuth = true,
 	} = params;
-
 	const BASE_URL = baseUrl ?? BACKEND_URL;
 
 	if (!BASE_URL) {
@@ -85,9 +85,13 @@ export async function fetchAPI<
 	}
 
 	const requestHeaders: Record<string, string> = {
-		'Content-Type': 'application/json',
+		// 'Content-Type': 'application/json',
 		...headers,
 	};
+
+	if (!(body instanceof FormData)) {
+		requestHeaders['Content-Type'] = 'application/json';
+	}
 
 	if (requireAuth) {
 		const authToken = (await cookies()).get(COOKIE_NAME)?.value;
@@ -96,12 +100,19 @@ export async function fetchAPI<
 		requestHeaders['Authorization'] = `Bearer ${authToken}`;
 	}
 
+	let requestBody: string | FormData | null = null;
+	if (body instanceof FormData) {
+		requestBody = body;
+	} else {
+		requestBody = JSON.stringify(body);
+	}
+
 	try {
 		const response = await fetch(resolvedUrl, {
 			method,
 			headers: requestHeaders,
 			// Include body for non-GET/DELETE requests
-			...(method !== 'GET' && method !== 'DELETE' && body ? { body: JSON.stringify(body) } : {}),
+			...(method != 'GET' && method != 'DELETE' && body ? { body: requestBody } : {}),
 			credentials: 'include',
 			// cache: "no-store", // Prevent caching of authenticated requests
 		});
@@ -123,55 +134,12 @@ export async function fetchAPI<
 		};
 	} catch (error) {
 		const errorInstance = error as Error;
+		if (throwOnError) {
+			throw errorInstance;
+		}
 		return {
 			success: false,
 			message: errorInstance.message,
 		};
-	}
-}
-
-export async function setAuthCookie(
-	token: string,
-	options?: {
-		maxAge?: number;
-		path?: string;
-		secure?: boolean;
-		sameSite?: 'strict' | 'lax' | 'none';
-	},
-) {
-	const cookieStore = await cookies();
-
-	cookieStore.set({
-		name: COOKIE_NAME,
-		value: token,
-		httpOnly: true,
-		secure: options?.secure ?? process.env.NODE_ENV === 'production',
-		sameSite: options?.sameSite ?? 'lax',
-		path: options?.path ?? '/',
-		// Default to 7 days if not specified
-		maxAge: options?.maxAge ?? 7 * 24 * 60 * 60,
-	});
-}
-export async function clearAuthCookie() {
-	const cookieStore = await cookies();
-	cookieStore.delete(COOKIE_NAME);
-}
-
-export async function isAuthenticated(): Promise<boolean> {
-	try {
-		const cookieStore = cookies();
-		const token = (await cookieStore).get(COOKIE_NAME)?.value;
-		return !!token;
-	} catch {
-		return false;
-	}
-}
-
-export async function getAuthToken(): Promise<string | undefined> {
-	try {
-		const cookieStore = cookies();
-		return (await cookieStore).get(COOKIE_NAME)?.value;
-	} catch {
-		return undefined;
 	}
 }

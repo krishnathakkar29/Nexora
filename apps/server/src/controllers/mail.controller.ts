@@ -49,6 +49,7 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 					status: 'PENDING',
 					contactId: contact.id,
 					platform: platform ?? '',
+					userId: req.user,
 				},
 			});
 			let attachmentIds: string[] = [];
@@ -77,7 +78,6 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 				body: emailBody,
 				attachmentIds,
 			});
-			console.count('itthere');
 
 			return emailSent;
 		}),
@@ -88,4 +88,35 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 		message: 'Emails queued for sending.',
 		emailSentRecords,
 	});
+});
+
+export const getMailHistory = AsyncHandler(async (req, res, next) => {
+	const userId = req.user;
+
+	const getContacts = await prisma.contact.findMany({
+		where: {
+			userId: req.user,
+		},
+		include: {
+			emailsSent: {
+				select: {
+					platform: true,
+					status: true,
+					sentAt: true,
+				},
+			},
+		},
+		orderBy: {
+			email: 'asc',
+		},
+	});
+
+	return res.status(200).json({
+		staus: true,
+		message: 'mails fetched successfully',
+		data: {
+			contacts: getContacts,
+		},
+	});
+
 });

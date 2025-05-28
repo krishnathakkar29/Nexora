@@ -31,6 +31,20 @@ const data = {
 				},
 			],
 		},
+		{
+			title: 'Mails',
+			url: '#',
+			items: [
+				{
+					title: 'Send Mails',
+					url: '/mail/send-mail',
+				},
+				{
+					title: 'History',
+					url: '/mail/history',
+				},
+			],
+		},
 	],
 };
 
@@ -42,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<div className="flex gap-2 font-semibold text-lg items-end leading-none p-2">
 						{/* <FramerLogoIcon className="size-6" /> */}
 						{/* <img src="/logo.png" alt="Logo" className="h-6" /> */}
-						Utilify
+						Nexora
 					</div>
 				</Link>
 			</SidebarHeader>

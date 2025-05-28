@@ -1,7 +1,7 @@
 import { Queue } from 'bullmq';
+import 'dotenv/config';
 
 export const mailQueueName = 'emailQueue';
-
 console.log('Redis host:', process.env.REDIS_HOST);
 console.log('Redis port:', process.env.REDIS_PORT);
 

@@ -17,7 +17,7 @@ export async function register(formData: FormData) {
 				email,
 				password,
 			},
-			throwOnError: true,
+			throwOnError: false,
 			requireAuth: false,
 		});
 
@@ -53,7 +53,7 @@ export async function login(formData: FormData) {
 			url: '/user/login',
 			method: 'POST',
 			body: { email, password },
-			throwOnError: true,
+			throwOnError: false,
 			requireAuth: false,
 		});
 
@@ -86,7 +86,6 @@ export async function logout() {
 		url: '/user/logout',
 		method: 'POST',
 		body: {},
-		throwOnError: true,
 		requireAuth: true,
 	});
 	if (!res.success) throw new Error(res.message);

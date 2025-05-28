@@ -57,10 +57,9 @@ export async function fetchAPI<
 		body = {},
 		headers = {},
 		// onError,
-		throwOnError,
-		requireAuth = false,
+		throwOnError = false,
+		requireAuth = true,
 	} = params;
-	console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
 	const BASE_URL = baseUrl ?? BACKEND_URL;
 
 	if (!BASE_URL) {
@@ -132,7 +131,6 @@ export async function fetchAPI<
 		};
 	} catch (error) {
 		const errorInstance = error as Error;
-		console.log('Error in fetchAPI:', errorInstance);
 		if (throwOnError) {
 			throw errorInstance;
 		}
