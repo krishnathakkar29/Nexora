@@ -2,6 +2,7 @@ import { mailQueueName, REDIS_HOST, REDIS_PORT } from '@workspace/common/mail-qu
 import { Job, Worker } from 'bullmq';
 import { default as Redis } from 'ioredis';
 import { prisma } from '@workspace/db';
+import { EMAILUPDATE } from '@workspace/common/socket-events';
 interface JobData {
 	userId: string;
 	emailId: string;
@@ -34,12 +35,8 @@ export const emailWorker = new Worker(
 
 emailWorker.on('completed', async (job: Job) => {
 	console.log(`Job ${job.id} completed!`);
-	await new Promise((resolve) => {
-		setTimeout(() => {
-			console.log(`Job ${job.id} processed successfully.`);
-			resolve(true);
-		}, 1000);
-	});
+
+	new Promise((resolve) => setTimeout(resolve, 5000)); // Simulate email sending delay
 
 	const jobData = job.data as JobData;
 
@@ -54,7 +51,7 @@ emailWorker.on('completed', async (job: Job) => {
 	});
 
 	await redisInstance.publish(
-		'worker:email:update',
+		EMAILUPDATE,
 		JSON.stringify({
 			userId: jobData.userId,
 			emailId: jobData.emailId,

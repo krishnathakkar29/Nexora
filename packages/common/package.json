@@ -4,9 +4,10 @@
 	"main": "index.js",
 	"type": "module",
 	"exports": {
-		"./config": "./src/constants/index.ts",
+		"./config": "./src/constants/constants.ts",
 		"./zod/schema/mail": "./src/schema/mail.ts",
-		"./mail-queue": "./src/queue/index.ts"
+		"./mail-queue": "./src/queue/index.ts",
+		"./socket-events": "./src/socket-events/events.ts"
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

@@ -72,6 +72,7 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 			}
 
 			await emailQueue.add(mailQueueName, {
+				userId: req.user,
 				emailId: emailSent.id,
 				recipient: recipient,
 				subject,

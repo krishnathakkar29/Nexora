@@ -2,7 +2,6 @@ import { Queue } from 'bullmq';
 import dotenv from 'dotenv';
 
 dotenv.config({
-	debug: true,
 	path: '../../packages/common/.env',
 });
 
@@ -17,7 +16,7 @@ export const emailQueue = new Queue(mailQueueName, {
 		port: Number(process.env.REDIS_PORT),
 	},
 	defaultJobOptions: {
-		delay: 0,
+		delay: 5000,
 		attempts: 3,
 		backoff: {
 			type: 'exponential',
