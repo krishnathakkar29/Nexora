@@ -1,4 +1,4 @@
-import { COOKIE_NAME } from '@workspace/common/config';
+import { COOKIE_NAME, JWT_SECRET } from '@workspace/common/config';
 import { AsyncHandler } from '@/middlewares/error.js';
 import ErrorHandler from '@/utils/errorHandler.js';
 import bcrypt from 'bcryptjs';
@@ -36,7 +36,7 @@ export const register = AsyncHandler(async (req: Request, res: Response, next: N
 
 	console.log('newUser', newUser);
 
-	const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET!, { expiresIn: '1d' });
+	const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET!, { expiresIn: '1d' });
 
 	const { password: _, ...userWithoutPassword } = newUser;
 
@@ -72,7 +72,7 @@ export const login = AsyncHandler(async (req: Request, res: Response, next: Next
 		return next(new ErrorHandler(401, 'Invalid credentials'));
 	}
 
-	const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '1d' });
+	const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
 
 	const { password: _, ...userWithoutPassword } = user;
 	console.log(userWithoutPassword);

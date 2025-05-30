@@ -1,9 +1,15 @@
 import { Queue } from 'bullmq';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+dotenv.config({
+	debug: true,
+	path: '../../packages/common/.env',
+});
 
 export const mailQueueName = 'emailQueue';
-console.log('Redis host:', process.env.REDIS_HOST);
-console.log('Redis port:', process.env.REDIS_PORT);
+
+export const REDIS_HOST = process.env.REDIS_HOST!;
+export const REDIS_PORT = process.env.REDIS_PORT!;
 
 export const emailQueue = new Queue(mailQueueName, {
 	connection: {

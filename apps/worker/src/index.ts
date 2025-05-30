@@ -1,6 +1,5 @@
-import { mailQueueName } from '@workspace/common/mail-queue';
+import { mailQueueName, REDIS_HOST, REDIS_PORT } from '@workspace/common/mail-queue';
 import { Job, Worker } from 'bullmq';
-import 'dotenv/config';
 
 export const emailWorker = new Worker(
 	mailQueueName,
@@ -12,8 +11,8 @@ export const emailWorker = new Worker(
 	},
 	{
 		connection: {
-			host: process.env.REDIS_HOST,
-			port: Number(process.env.REDIS_PORT),
+			host: REDIS_HOST,
+			port: Number(REDIS_PORT),
 		},
 	},
 );

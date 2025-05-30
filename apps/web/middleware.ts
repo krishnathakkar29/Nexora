@@ -1,20 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { COOKIE_NAME } from '@workspace/common/config';
 
-const PROTECTED_PATHS = [
-	"/dashboard",
-	'/profile',
-	'/settings',
-	'/products',
-	'/',
-];
+const PROTECTED_PATHS = ['/mail/send-mail', '/dashboard', '/profile', '/settings', '/products', '/'];
 
 const AUTH_PATHS = ['/sign-in', '/sign-up'];
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
-	const token = request.cookies.get(COOKIE_NAME)?.value || null;
+	const token = request.cookies.get(process.env.COOKIE_NAME!)?.value || null;
 	const isAuthenticated = !!token;
 	const isProtectedPath = PROTECTED_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 

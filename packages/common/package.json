@@ -4,7 +4,7 @@
 	"main": "index.js",
 	"type": "module",
 	"exports": {
-		"./config": "./src/index.ts",
+		"./config": "./src/constants/index.ts",
 		"./zod/schema/mail": "./src/schema/mail.ts",
 		"./mail-queue": "./src/queue/index.ts"
 	},
@@ -17,11 +17,12 @@
 	"description": "",
 	"devDependencies": {
 		"@workspace/typescript-config": "workspace:*",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"@types/node": "^22.14.0"
 	},
 	"dependencies": {
 		"bullmq": "^5.52.2",
-		"dotenv": "^16.4.5",
+		"dotenv": "^16.5.0",
 		"zod": "^3.24.2"
 	}
 }

@@ -1,9 +1,6 @@
 'use server';
 import { BACKEND_URL } from '@/config/config';
-import { COOKIE_NAME } from '@workspace/common/config';
 import { cookies } from 'next/headers';
-// import { COOKIE_NAME } from '@workspace/common/config';
-// import { cookies } from 'next/headers';
 
 export type TNoParams = Record<string, never>;
 
@@ -94,9 +91,9 @@ export async function fetchAPIServer<
 	}
 
 	if (requireAuth) {
-		const authToken = (await cookies()).get(COOKIE_NAME)?.value;
+		const authToken = (await cookies()).get(process.env.COOKIE_NAME!)?.value;
 
-		requestHeaders['Cookie'] = `${COOKIE_NAME}=${authToken}`;
+		requestHeaders['Cookie'] = `${process.env.COOKIE_NAME!}=${authToken}`;
 		requestHeaders['Authorization'] = `Bearer ${authToken}`;
 	}
 

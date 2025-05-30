@@ -109,6 +109,43 @@ importers:
         specifier: 8.30.1
         version: 8.30.1(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
 
+  apps/socket:
+    dependencies:
+      '@workspace/common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.25.0
+        version: 9.26.0
+      '@types/node':
+        specifier: ^22.15.29
+        version: 22.15.29
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      eslint:
+        specifier: ^9.25.0
+        version: 9.26.0(jiti@2.4.2)
+      globals:
+        specifier: ^16.0.0
+        version: 16.1.0
+      tsc-alias:
+        specifier: ^1.8.15
+        version: 1.8.16
+      tsx:
+        specifier: ^4.19.3
+        version: 4.19.4
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: 8.30.1
+        version: 8.30.1(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
+
   apps/web:
     dependencies:
       '@hookform/resolvers':
@@ -261,12 +298,15 @@ importers:
         specifier: ^5.52.2
         version: 5.52.2
       dotenv:
-        specifier: ^16.4.5
+        specifier: ^16.5.0
         version: 16.5.0
       zod:
         specifier: ^3.24.2
         version: 3.24.2
     devDependencies:
+      '@types/node':
+        specifier: ^22.14.0
+        version: 22.15.17
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -2229,6 +2269,9 @@ packages:
 
   '@types/node@22.15.17':
     resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
+
+  '@types/node@22.15.29':
+    resolution: {integrity: sha512-LNdjOkUDlU1RZb8e1kOIUpN1qQUlzGkEtbVNo53vbrwDg5om6oduhm4SiUaPW5ASTXhAiP0jInWG8Qx9fVlOeQ==}
 
   '@types/prismjs@1.26.5':
     resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
@@ -7702,6 +7745,10 @@ snapshots:
       undici-types: 6.20.0
 
   '@types/node@22.15.17':
+    dependencies:
+      undici-types: 6.21.0
+
+  '@types/node@22.15.29':
     dependencies:
       undici-types: 6.21.0
 

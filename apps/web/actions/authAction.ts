@@ -1,6 +1,5 @@
 'use server';
 import { fetchAPI } from '@/lib/fetch-api';
-import { COOKIE_NAME } from '@workspace/common/config';
 import { cookies } from 'next/headers';
 
 export async function register(formData: FormData) {
@@ -26,7 +25,7 @@ export async function register(formData: FormData) {
 		}
 
 		(await cookies()).set({
-			name: COOKIE_NAME,
+			name: process.env.COOKIE_NAME!,
 			value: res.data.token!,
 			httpOnly: true,
 			maxAge: 24 * 60 * 60,
@@ -62,7 +61,7 @@ export async function login(formData: FormData) {
 		}
 
 		(await cookies()).set({
-			name: COOKIE_NAME,
+			name: process.env.COOKIE_NAME!,
 			value: res.data.token!,
 			httpOnly: true,
 			maxAge: 24 * 60 * 60,
@@ -90,7 +89,7 @@ export async function logout() {
 	});
 	if (!res.success) throw new Error(res.message);
 
-	(await cookies()).delete(COOKIE_NAME);
+	(await cookies()).delete(process.env.COOKIE_NAME!);
 
 	return {
 		success: true,
