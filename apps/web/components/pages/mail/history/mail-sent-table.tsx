@@ -63,6 +63,8 @@ function MailSentTable() {
 
 			return response.data;
 		},
+		refetchInterval: 3000, // Refetch every minute
+		refetchIntervalInBackground: true,
 	});
 
 	const [searchTerm, setSearchTerm] = useState('');
