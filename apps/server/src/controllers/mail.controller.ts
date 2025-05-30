@@ -118,5 +118,12 @@ export const getMailHistory = AsyncHandler(async (req, res, next) => {
 			contacts: getContacts,
 		},
 	});
+});
 
+export const bulkMailSender = AsyncHandler(async (req, res, next) => {
+	const { emails } = req.body;
+	let parsedMails = JSON.parse(emails);
+	let emailsArr: string[] = Array.isArray(parsedMails) ? parsedMails : [parsedMails];
+
+	console.log('Bulk mail sender called with emails:', emailsArr);
 });
