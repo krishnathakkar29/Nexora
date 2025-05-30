@@ -7,6 +7,7 @@ import { default as Redis } from 'ioredis';
 import 'dotenv/config';
 import { socketAuth } from './auth';
 import { errorMiddleware } from './error';
+import { REDIS_HOST, REDIS_PORT } from '@workspace/common/mail-queue';
 
 const app = express();
 
@@ -20,7 +21,10 @@ const io = new Server(server, {
 	},
 });
 
-const redisInstance = new Redis();
+const redisInstance = new Redis({
+	host: REDIS_HOST,
+	port: Number(REDIS_PORT),
+});
 
 redisInstance.subscribe('worker:email:update');
 

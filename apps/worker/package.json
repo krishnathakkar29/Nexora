@@ -2,7 +2,7 @@
 	"name": "worker",
 	"version": "1.0.0",
 	"main": "index.js",
-  "type": "module",
+	"type": "module",
 	"scripts": {
 		"start": "set NODE_ENV=PRODUCTION & node dist/index.js",
 		"build": "npm run lint && tsc -p . && tsc-alias",
@@ -18,10 +18,12 @@
 		"@workspace/common": "workspace:*",
 		"@workspace/db": "workspace:*",
 		"bullmq": "^5.52.2",
-		"dotenv": "^16.5.0"
+		"dotenv": "^16.5.0",
+		"ioredis": "^5.6.1"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.25.0",
+		"@types/ioredis": "^5.0.0",
 		"@workspace/typescript-config": "workspace:*",
 		"eslint": "^9.25.0",
 		"globals": "^16.0.0",
