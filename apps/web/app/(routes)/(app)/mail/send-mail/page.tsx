@@ -14,10 +14,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { sendEmailSchema } from '@workspace/common/zod/schema/mail';
 import { fetchAPI } from '@/lib/fetch-api';
 import { toast } from 'sonner';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 function page() {
 	const [files, setFiles] = useState<File[]>([]);
 	const [isMarkdown, setIsMarkdown] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+
+	const queryClient = useQueryClient();
 
 	const form = useForm<z.infer<typeof sendEmailSchema>>({
 		resolver: zodResolver(sendEmailSchema),
@@ -52,47 +54,58 @@ function page() {
 		setFiles((prev) => prev.filter((_, i) => i !== index));
 	};
 
-	const onSubmit = async (data: any) => {
-		try {
-			console.log('Form submitted:', data);
+	const { mutate: sendEmailMutation, isPending } = useMutation({
+		mutationFn: async (data: any) => {
+			try {
+				const formData = new FormData();
+				data.recipients.forEach((recipient: { email: string }) => {
+					formData.append('recipients', recipient.email);
+				});
 
-			const formData = new FormData();
-			data.recipients.forEach((recipient: { email: string }) => {
-				formData.append('recipients', recipient.email);
-			});
+				const formattedBody = data.body.replace(/\n/g, '<br>');
+				formData.append('subject', data.subject);
+				formData.append('platform', data.platform);
+				formData.append('companyName', data.companyName);
+				formData.append('body', formattedBody);
 
-			const formattedBody = data.body.replace(/\n/g, '<br>');
-			formData.append('subject', data.subject);
-			formData.append('platform', data.platform);
-			formData.append('companyName', data.companyName);
-			formData.append('body', formattedBody);
+				files.forEach((file) => {
+					formData.append('files', file);
+				});
 
-			files.forEach((file) => {
-				formData.append('files', file);
-			});
+				const response = await fetchAPI({
+					url: '/mail/send',
+					method: 'POST',
+					body: formData,
+					throwOnError: true,
+					requireAuth: false,
+				});
 
-			const formDataEntries = Array.from(formData.entries());
-			// console.log('Form data contents:', formDataEntries);
+				console.log('Response:', response);
+				if (!response.success) {
+					toast.error(response.message);
+					return;
+				}
 
-			const response = await fetchAPI({
-				url: '/mail/send',
-				method: 'POST',
-				body: formData,
-				throwOnError: true,
-				requireAuth: false,
-			});
-
-			console.log('Response:', response);
-			if (!response.success) {
-				toast.error(response.message);
-				return;
+				return response;
+			} catch (error) {
+				console.error('Error submitting form:', error);
+				console.error('Error submitting form:', error);
 			}
+		},
+		onSuccess: (data: any) => {
+			console.log('Email sent successfully:', data);
+			queryClient.invalidateQueries({ queryKey: ['mail-history'] });
+			toast.success(data.message);
+		},
+		onError: (error: any) => {
+			console.error('Error sending email:', error);
+			toast.error(error.message || 'Failed to send email');
+		},
+	});
 
-			toast.success(response.message);
-		} catch (error) {
-			console.error('Error submitting form:', error);
-			console.error('Error submitting form:', error);
-		}
+	const onSubmit = async (data: any) => {
+		console.log('Form submitted:', data);
+		sendEmailMutation(data);
 	};
 	return (
 		<div className="w-full py-6 px-8 md:px-16 mx-auto  animate-in fade-in-50">
@@ -291,8 +304,8 @@ function page() {
 					</div>
 
 					<div className="flex justify-end pt-4">
-						<Button type="submit" disabled={isLoading} size="lg" className="px-8 py-6 text-lg">
-							{isLoading ? (
+						<Button type="submit" disabled={isPending} size="lg" className="px-8 py-6 text-lg">
+							{isPending ? (
 								<>
 									<Loader2 className="h-5 w-5 mr-2 animate-spin" />
 									Sending...

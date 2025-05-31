@@ -1,8 +1,6 @@
 import { mailQueueName, REDIS_HOST, REDIS_PORT } from '@workspace/common/mail-queue';
-import { Job, Worker } from 'bullmq';
-import { default as Redis } from 'ioredis';
 import { prisma } from '@workspace/db';
-import { EMAILUPDATE } from '@workspace/common/socket-events';
+import { Job, Worker } from 'bullmq';
 interface JobData {
 	userId: string;
 	emailId: string;
@@ -11,11 +9,6 @@ interface JobData {
 	body: string;
 	attachmentIds: string[];
 }
-
-const redisInstance = new Redis.default({
-	host: REDIS_HOST,
-	port: Number(REDIS_PORT),
-});
 
 export const emailWorker = new Worker(
 	mailQueueName,
@@ -49,17 +42,6 @@ emailWorker.on('completed', async (job: Job) => {
 			sentAt: new Date(),
 		},
 	});
-
-	await redisInstance.publish(
-		EMAILUPDATE,
-		JSON.stringify({
-			userId: jobData.userId,
-			emailId: jobData.emailId,
-			status: 'DONE',
-			sentAt: updatedEmail.sentAt,
-			contactId: updatedEmail.contactId,
-		}),
-	);
 });
 emailWorker.on('failed', (job: Job | undefined, err: Error) => {
 	if (job) {
