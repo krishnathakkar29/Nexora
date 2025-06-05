@@ -89,7 +89,6 @@ function page() {
 				return response;
 			} catch (error) {
 				console.error('Error submitting form:', error);
-				console.error('Error submitting form:', error);
 			}
 		},
 		onSuccess: (data: any) => {

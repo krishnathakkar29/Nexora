@@ -8,6 +8,7 @@ import { DataTable } from './data-table';
 import ExcelExtract from './excel-extract';
 import { MailComposer } from './mail-composer';
 import { fetchAPI } from '@/lib/fetch-api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export type MailData = {
 	id: string;
@@ -23,74 +24,95 @@ export default function BulkEmailSender() {
 	const [emailData, setEmailData] = useState<MailData[]>([]);
 	const [emailBody, setEmailBody] = useState('');
 	const [attachments, setAttachments] = useState<File[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
+
+	const queryClient = useQueryClient();
 
 	const handleDataExtracted = (data: MailData[]) => {
 		setEmailData(data);
 		toast.error('Please review the data and select recipients before composing your email.');
 	};
 
+	const { mutate: sendBulkMailMutation, isPending } = useMutation({
+		mutationFn: async (data: MailData[]) => {
+			try {
+				const selectedRecipients = emailData.filter((row) => row.selected);
+
+				if (selectedRecipients.length === 0) {
+					toast.error('No recipients selected');
+
+					return;
+				}
+
+				if (!emailBody.trim()) {
+					toast.error('Email body is empty');
+
+					return;
+				}
+
+				console.log('Sending emails to the following recipients:');
+
+				const emailObjects = selectedRecipients.map((recipient) => {
+					// Replace variables in the email body
+					const personalizedBody = emailBody
+						.replace(/{{name}}/g, recipient.name)
+						.replace(/{{companyname}}/g, recipient.companyname)
+						.replace(/{{platform}}/g, recipient.platform);
+
+					// Format the email body by replacing newlines with <br> tags
+					const formattedBody = personalizedBody.replace(/\n/g, '<br>');
+
+					return {
+						name: recipient.name,
+						companyname: recipient.companyname,
+						email: recipient.email,
+						subject: recipient.subject,
+						platform: recipient.platform,
+						body: formattedBody,
+					};
+				});
+
+				// Create FormData object for backend processing
+				const formData = new FormData();
+				formData.append('emails', JSON.stringify(emailObjects));
+
+				// Add attachments using the specified format
+				attachments.forEach((file) => {
+					formData.append('files', file);
+				});
+
+				const response = await fetchAPI({
+					url: '/mail/bulk-send',
+					method: 'POST',
+					body: formData,
+					throwOnError: true,
+					requireAuth: false,
+				});
+				console.log('Response from bulk send:', response);
+
+				if (!response.success) {
+					toast.error(response.message);
+					return;
+				}
+
+				return response;
+			} catch (error) {
+				console.error('Error sending emails:', error);
+				toast.error('An error occurred while sending emails. Please try again later.');
+			}
+		},
+		onSuccess: (data: any) => {
+			console.log('Email sent successfully:', data);
+			queryClient.invalidateQueries({ queryKey: ['mail-history'] });
+			toast.success(data.message);
+		},
+		onError: (error: any) => {
+			console.error('Error sending email:', error);
+			toast.error(error.message || 'Failed to send email');
+		},
+	});
+
 	const handleSendEmails = async () => {
-		setIsLoading(true);
-
-		try {
-			const selectedRecipients = emailData.filter((row) => row.selected);
-
-			if (selectedRecipients.length === 0) {
-				toast.error('No recipients selected');
-				setIsLoading(false);
-				return;
-			}
-
-			if (!emailBody.trim()) {
-				toast.error('Email body is empty');
-				setIsLoading(false);
-				return;
-			}
-
-			console.log('Sending emails to the following recipients:');
-
-			const emailObjects = selectedRecipients.map((recipient) => {
-				// Replace variables in the email body
-				const personalizedBody = emailBody
-					.replace(/{{name}}/g, recipient.name)
-					.replace(/{{companyname}}/g, recipient.companyname)
-					.replace(/{{platform}}/g, recipient.platform);
-
-				// Format the email body by replacing newlines with <br> tags
-				const formattedBody = personalizedBody.replace(/\n/g, '<br>');
-
-				return {
-					name: recipient.name,
-					email: recipient.email,
-					subject: recipient.subject,
-					platform: recipient.platform,
-					body: formattedBody,
-				};
-			});
-
-			// Create FormData object for backend processing
-			const formData = new FormData();
-			formData.append('emails', JSON.stringify(emailObjects));
-
-			// Add attachments using the specified format
-			attachments.forEach((file) => {
-				formData.append('files', file);
-			});
-
-			const response = await fetchAPI({
-				url: '/mail/bulk-send',
-				method: 'POST',
-				body: formData,
-				throwOnError: true,
-				requireAuth: false,
-			});
-		} catch (error) {
-			console.error('Error sending emails:', error);
-			toast.error('An error occurred while sending emails. Please try again later.');
-		} finally {
-			setIsLoading(false);
-		}
+		sendBulkMailMutation(emailData);
 	};
 
 	return (
@@ -124,9 +146,9 @@ export default function BulkEmailSender() {
 					<Button
 						onClick={handleSendEmails}
 						className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2"
-						disabled={isLoading}
+						disabled={isPending}
 					>
-						{isLoading ? 'Processing...' : 'Send Emails'}
+						{isPending ? 'Processing...' : 'Send Emails'}
 					</Button>
 				</div>
 			)}

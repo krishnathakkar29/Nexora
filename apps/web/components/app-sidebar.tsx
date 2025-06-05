@@ -43,6 +43,10 @@ const data = {
 					title: 'History',
 					url: '/mail/history',
 				},
+				{
+					title: 'Bulk Mails',
+					url: '/mail/bulk-mail',
+				},
 			],
 		},
 	],
