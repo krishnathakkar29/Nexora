@@ -6,3 +6,12 @@ export type BulkMailArr = {
 	body: string;
 	subject: string;
 };
+
+export type PDFPage = {
+	pageContent: string;
+	metadata: {
+		loc: {
+			pageNumber: number;
+		};
+	};
+};

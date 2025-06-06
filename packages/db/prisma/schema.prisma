@@ -23,6 +23,7 @@ model User {
   updatedAt DateTime    @updatedAt
   contact   Contact[]
   emailSent EmailSent[]
+  chatPdfs  ChatPdf[]
 }
 
 model Contact {
@@ -39,7 +40,7 @@ model Contact {
   @@index([userId])
 }
 
-  model EmailSent {
+model EmailSent {
   id       String   @id @default(cuid())
   subject  String
   body     String
@@ -75,4 +76,36 @@ enum EmailStatus {
   PENDING
   DONE
   FAILED
+}
+
+model ChatPdf {
+  id      String @id @default(cuid())
+  pdfName String
+  pdfUrl  String
+  fileKey String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  chatMessage ChatMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id      String         @id @default(cuid())
+  content String
+  role    UserSystemEnum
+
+  chatPdfId String
+  chatPdf   ChatPdf @relation(fields: [chatPdfId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserSystemEnum {
+  USER
+  SYSTEM
 }
