@@ -7,6 +7,7 @@ import FileUpload from './file-upload';
 import ChatCard from './chat-card';
 import { Skeleton } from '@workspace/ui/components/skeleton';
 import ChatCardSkeleton from '@/components/skeleton/chat-card-skeleton';
+
 function Chats() {
 	const {
 		data: userChats = [],

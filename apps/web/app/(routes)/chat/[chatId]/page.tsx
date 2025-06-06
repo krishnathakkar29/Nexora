@@ -1,16 +1,18 @@
-import Chats from '@/components/pages/chat/chats';
+import ChatInterface from '@/components/pages/chat/[chatId]/chat-interface';
 import { fetchAPIServer } from '@/lib/fetch-api-server';
 import { getQueryClient } from '@/lib/get-query-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import React from 'react';
 
-async function page() {
+async function page({ params }: { params: Promise<{ chatId: string }> }) {
+	const { chatId } = await params;
 	const queryClient = getQueryClient();
 
 	await queryClient.prefetchQuery({
-		queryKey: ['chat-pdfs'],
+		queryKey: ['chatId', chatId],
 		queryFn: async () => {
 			const response = await fetchAPIServer({
-				url: '/chat/pdfs',
+				url: `/chat/${chatId}`,
 				method: 'GET',
 				requireAuth: true,
 				throwOnError: false,
@@ -25,7 +27,7 @@ async function page() {
 	});
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<Chats />
+			<ChatInterface chatId={chatId} />
 		</HydrationBoundary>
 	);
 }

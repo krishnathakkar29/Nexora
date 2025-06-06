@@ -4,6 +4,7 @@ import { Document } from 'langchain/document';
 import md5 from 'md5';
 import { PineconeRecord } from '@pinecone-database/pinecone';
 import { getEmbeddings } from './embeddings.js';
+import { getPineconeClient } from './pinecone.js';
 
 export const truncateStringByBytes = (str: string, bytes: number) => {
 	const enc = new TextEncoder();
@@ -48,6 +49,42 @@ export async function embedDocument(doc: Document) {
 
 export function convertToAscii(inputString: string) {
 	// remove non ascii characters
-	const asciiString = inputString.replace(/[^\x00-\x7F]+/g, '');
+	console.log('converting to ascii', inputString);
+	const asciiString = inputString.replace(/[^\x00-\x7F]/g, '');
 	return asciiString;
+}
+
+export async function getMatchesFromEmbeddings(embeddings: number[], fileKey: string) {
+	try {
+		const client = getPineconeClient();
+		const pineconeIndex = await client.index('nexi');
+		console.log(fileKey, 'fileKey');
+		const namespace = pineconeIndex.namespace(convertToAscii(fileKey));
+		const queryResult = await namespace.query({
+			topK: 5,
+			vector: embeddings,
+			includeMetadata: true,
+		});
+		return queryResult.matches || [];
+	} catch (error) {
+		console.log('error querying embeddings', error);
+		throw error;
+	}
+}
+
+export async function getContext(query: string, fileKey: string) {
+	const queryEmbeddings = await getEmbeddings(query);
+	console.log('fileKey', fileKey);
+	const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey);
+
+	const qualifyingDocs = matches.filter((match) => match.score && match.score > 0.1);
+
+	type Metadata = {
+		text: string;
+		pageNumber: number;
+	};
+
+	let docs = matches.map((match) => (match.metadata as Metadata).text);
+	// 5 vectors
+	return docs.join('\n').substring(0, 3000);
 }

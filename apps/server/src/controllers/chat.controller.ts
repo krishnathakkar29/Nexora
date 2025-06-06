@@ -4,8 +4,13 @@ import { s3Download, s3Upload } from '@/utils/s3.js';
 import { prisma } from '@workspace/db';
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
 import { PDFPage } from '@/utils/types.js';
-import { convertToAscii, embedDocument, prepareDocument } from '@/utils/chatpdf-helper.js';
+import { convertToAscii, embedDocument, getContext, prepareDocument } from '@/utils/chatpdf-helper.js';
 import { getPineconeClient } from '@/utils/pinecone.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(process.env.API_KEY!);
+
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 export const getChatPdfs = AsyncHandler(async (req, res, next) => {
 	const user = req.user;
@@ -68,12 +73,132 @@ export const uploadPdfToS3 = AsyncHandler(async (req, res, next) => {
 		},
 	});
 
-
 	return res.status(200).json({
 		status: true,
 		message: 'PDF uploaded successfully.',
 		data: {
 			chatDoc: chatPdfDoc,
+		},
+	});
+});
+
+export const getChat = AsyncHandler(async (req, res, next) => {
+	const { id } = req.params;
+
+	if (!id) {
+		return next(new ErrorHandler(400, 'Chat ID is required'));
+	}
+
+	const chat = await prisma.chatPdf.findUnique({
+		where: {
+			id,
+		},
+		include: {
+			chatMessage: {
+				select: {
+					id: true,
+					content: true,
+					createdAt: true,
+					updatedAt: true,
+					role: true,
+				},
+				orderBy: {
+					createdAt: 'asc',
+				},
+			},
+		},
+	});
+
+	if (!chat) {
+		return next(new ErrorHandler(404, 'Chat not found'));
+	}
+
+	return res.status(200).json({
+		status: true,
+		message: 'Chat fetched successfully.',
+		data: {
+			chat,
+		},
+	});
+});
+
+export const getAllChats = AsyncHandler(async (req, res, next) => {
+	const chats = await prisma.chatPdf.findMany({
+		where: {
+			userId: req.user,
+		},
+	});
+
+	return res.status(200).json({
+		status: true,
+		message: 'Chats fetched successfully.',
+		data: {
+			chats,
+		},
+	});
+});
+
+export const replyMessage = AsyncHandler(async (req, res, next) => {
+	console.log('aaya');
+
+	const { message, chatId } = await req.body;
+	console.log(req.body);
+	console.log('chatId', chatId);
+	const chat = await prisma.chatPdf.findUnique({
+		where: {
+			id: chatId,
+		},
+		include: {
+			chatMessage: true,
+		},
+	});
+
+	if (!chat) {
+		return next(new ErrorHandler(404, 'Chat not found'));
+	}
+	const fileKey = chat.fileKey;
+
+	const lastMessage = message;
+
+	console.log('lastMessage', lastMessage);
+	const context = await getContext(lastMessage, fileKey);
+
+	const prompt = `
+        AI assistant is a brand new, powerful, human-like artificial intelligence.
+        The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
+        AI is a well-behaved and well-mannered individual.
+        AI is always friendly, kind, and inspiring, and is eager to provide vivid and thoughtful responses to the user.
+        START CONTEXT BLOCK
+        ${context}
+        END OF CONTEXT BLOCK
+        User: ${lastMessage}
+        `;
+
+	const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+	const result = await model.generateContent(prompt);
+	const aiResponse = result.response.text();
+
+	await prisma.chatMessage.create({
+		data: {
+			chatPdfId: chatId,
+			content: lastMessage,
+			role: 'USER',
+		},
+	});
+
+	await prisma.chatMessage.create({
+		data: {
+			chatPdfId: chatId,
+			content: aiResponse,
+			role: 'SYSTEM',
+		},
+	});
+	console.log('AI Response:', aiResponse);
+	return res.status(200).json({
+		status: true,
+		message: 'Message replied successfully.',
+		data: {
+			reply: aiResponse,
 		},
 	});
 });
