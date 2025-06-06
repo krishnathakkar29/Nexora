@@ -24,6 +24,7 @@ model User {
   contact   Contact[]
   emailSent EmailSent[]
   chatPdfs  ChatPdf[]
+  forms     Form[]
 }
 
 model Contact {
@@ -108,4 +109,34 @@ model ChatMessage {
 enum UserSystemEnum {
   USER
   SYSTEM
+}
+
+model Form {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String  @default("")
+  content     String  @default("[]")
+  published   Boolean @default(false)
+
+  visits      Int @default(0)
+  submissions Int @default(0)
+
+  shareUrl String @unique @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  FormSubmission FormSubmission[]
+
+  @@unique([userId, name])
+}
+
+model FormSubmission {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  formId    Int
+  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
 }
