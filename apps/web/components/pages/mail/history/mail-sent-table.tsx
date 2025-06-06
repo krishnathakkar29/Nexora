@@ -19,7 +19,7 @@ import { Building2, CheckCircle, Clock, Filter, Mail, Search, Send, XCircle } fr
 import { useMemo, useState } from 'react';
 import MailHistorySkeleton from '@/components/skeleton/mail-history-skeleton';
 import { fetchAPI } from '@/lib/fetch-api';
-import { EmailData, EmailHistoryResponse } from '@/types/mail-history';
+import { EmailData, EmailHistoryResponse } from '@/types/mail/mail-history';
 import { useQuery } from '@tanstack/react-query';
 
 const statusConfig = {
