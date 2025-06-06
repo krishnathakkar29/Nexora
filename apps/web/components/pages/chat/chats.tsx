@@ -38,7 +38,7 @@ function Chats() {
 			{/* Header */}
 			<div className="relative z-10 border-b border-slate-800/50 backdrop-blur-xl bg-slate-950/20">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="flex items-center justify-between h-16">
+					<div className="flex items-center justify-between h-8">
 						<div className="flex items-center space-x-4">
 							<div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/25">
 								<span className="text-white font-bold text-sm">AI</span>
@@ -62,7 +62,7 @@ function Chats() {
 							/>
 						</svg>
 					</div>
-					<h2 className="text-3xl font-bold text-white mb-4">Upload a new PDF</h2>
+					<h2 className="text-3xl font-bold text-white mb-2">Upload a new PDF</h2>
 					<p className="text-slate-400 mb-8 max-w-md mx-auto">Drop your PDF here to start a new conversation with AI</p>
 					<div className="flex justify-center">
 						<FileUpload />

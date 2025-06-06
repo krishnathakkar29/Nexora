@@ -25,7 +25,6 @@
 		"@workspace/common": "workspace:*",
 		"@workspace/db": "workspace:*",
 		"@workspace/ui": "workspace:*",
-		"ai": "^4.3.16",
 		"class-variance-authority": "^0.7.1",
 		"date-fns": "^4.1.0",
 		"framer-motion": "^12.16.0",

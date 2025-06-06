@@ -3,16 +3,11 @@ import { fetchAPI } from '@/lib/fetch-api';
 import { useQuery } from '@tanstack/react-query';
 import { ChatMessage, ChatPdf } from '@workspace/db';
 import { Button } from '@workspace/ui/components/button';
-import { AnimatePresence } from 'framer-motion';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-// import ChatSidebar from './chat-sidebar';
+import { AnimatePresence, motion } from 'framer-motion';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-// import PDFViewer from './pdf-viewer';
-// import ChatHeader from './chat-header';
-import { Message, useChat } from '@ai-sdk/react';
-// import ChatMessages from './chat-messages';
-// import ChatInput from './chat-input';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Message } from '@ai-sdk/react';
 
 const ChatSidebar = React.lazy(() => import('./chat-sidebar'));
 const PDFViewer = React.lazy(() => import('./pdf-viewer'));
@@ -74,23 +69,6 @@ function ChatInterface({ chatId }: { chatId: string }) {
 			role: msg.role.toLowerCase() as 'user' | 'assistant',
 			createdAt: msg.createdAt,
 		})) || [];
-
-	// const {
-	// 	messages,
-	// 	input,
-	// 	handleInputChange,
-	// 	handleSubmit,
-	// 	isLoading: isProcessing,
-	// 	setMessages,
-	// } = useChat({
-	// 	api: `${process.env.NEXT_PUBLIC_BACKEND_URL}/chat/message`,
-	// 	body: { chatId },
-	// 	initialMessages,
-	// 	onFinish: () => {
-	// 		scrollToBottom();
-	// 		// refetch();
-	// 	},
-	// });
 
 	// Handle input change
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,18 +223,18 @@ function ChatInterface({ chatId }: { chatId: string }) {
 			<AnimatePresence>
 				{sidebarOpen && (
 					<motion.div
-						initial={{ width: 0, opacity: 0 }}
-						animate={{ width: '250px', opacity: 1 }}
-						exit={{ width: 0, opacity: 0 }}
-						transition={{ duration: 0.3 }}
+						// initial={{ width: 0, opacity: 0 }}
+						// animate={{ width: '250px', opacity: 1 }}
+						// exit={{ width: 0, opacity: 0 }}
+						// transition={{ duration: 0.1 }}
 						className="h-full border-r border-slate-800 bg-slate-900/50 backdrop-blur-lg z-20"
 					>
-						{useMemo(
-							() => (
-								<ChatSidebar chatId={chatId} onClose={() => setSidebarOpen(false)} />
-							),
+						{/* {useMemo(
+							() => ( */}
+						<ChatSidebar chatId={chatId} onClose={() => setSidebarOpen(false)} />
+						{/* ),
 							[chatId],
-						)}
+						)} */}
 					</motion.div>
 				)}
 			</AnimatePresence>

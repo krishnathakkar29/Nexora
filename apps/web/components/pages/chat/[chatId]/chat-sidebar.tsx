@@ -2,13 +2,14 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { fetchAPI } from '@/lib/fetch-api';
-import { Button } from '@workspace/ui/components/button';
-import { FileText, PlusCircle, X, Search } from 'lucide-react';
+import { Button, buttonVariants } from '@workspace/ui/components/button';
+import { FileText, PlusCircle, X, Search, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@workspace/ui/components/skeleton';
 import { cn } from '@workspace/ui/lib/utils';
 import { memo } from 'react';
+import { useRouter } from 'next/navigation';
 
 function ChatSidebar({ chatId, onClose }: { chatId: string; onClose: () => void }) {
 	// Fetch all user chats
@@ -30,20 +31,32 @@ function ChatSidebar({ chatId, onClose }: { chatId: string; onClose: () => void 
 		refetchOnMount: false,
 	});
 
-	// console.log('Chats:', chats);
+	const router = useRouter();
 
 	return (
 		<div className="h-full flex flex-col">
 			{/* Header */}
 			<div className="p-4 border-b border-slate-800 flex items-center justify-between">
+				<ArrowLeft
+					className={cn(
+						buttonVariants({
+							variant: 'ghost',
+							size: 'icon',
+							className: 'text-slate-400 hover:text-white',
+						}),
+						'h-5 w-5 cursor-pointer',
+					)}
+					onClick={() => {
+						router.push('/chat');
+					}}
+				/>
 				<h2 className="font-semibold text-white">Your PDFs</h2>
 				<Button variant="ghost" size="icon" onClick={onClose} className="text-slate-400 hover:text-white">
 					<X size={18} />
 				</Button>
 			</div>
-
 			{/* Search */}
-			<div className="p-4">
+			{/* <div className="p-4">
 				<div className="relative">
 					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-500" />
 					<input
@@ -52,18 +65,16 @@ function ChatSidebar({ chatId, onClose }: { chatId: string; onClose: () => void 
 						className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
 					/>
 				</div>
-			</div>
-
+			</div> */}
 			{/* New Chat Button */}
-			<div className="px-4 mb-4">
-				<Link href="/">
-					<Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-blue-500/25">
-						<PlusCircle className="mr-2 h-4 w-4" />
-						Upload New PDF
-					</Button>
-				</Link>
-			</div>
-
+			{/* <div className="px-4 mb-4">
+					<Link href="/chat">
+						<Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-0 shadow-lg shadow-blue-500/25">
+							<PlusCircle className="mr-2 h-4 w-4" />
+							Upload New PDF
+						</Button>
+					</Link>
+				</div> */}
 			{/* Chat List */}
 			<div className="flex-1 overflow-y-auto px-2">
 				{isLoading ? (
