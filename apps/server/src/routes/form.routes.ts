@@ -1,4 +1,4 @@
-import { createForm, getFormStats } from '@/controllers/form.controller.js';
+import { createForm, getFormByID, getFormStats, publishForm, updateForm } from '@/controllers/form.controller.js';
 import { isAuthenticated } from '@/middlewares/auth.js';
 import { Router } from 'express';
 
@@ -7,5 +7,8 @@ router.use(isAuthenticated);
 
 router.post('/get-stats', getFormStats);
 router.post('/create', createForm);
+router.get('/:id', getFormByID);
+router.post('/update', updateForm);
+router.post('/publish', publishForm);
 
 export default router;

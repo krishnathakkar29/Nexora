@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const PROTECTED_PATHS = ['/mail(.*)', '/dashboard', '/chat(.*)', '/chat/[chatId]'];
+const PROTECTED_PATHS = ['/mail(.*)', '/builder(.*)', '/dashboard', '/chat(.*)', '/chat/[chatId]'];
 
 const AUTH_PATHS = ['/sign-in', '/sign-up'];
 
