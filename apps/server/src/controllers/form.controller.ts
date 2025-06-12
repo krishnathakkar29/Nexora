@@ -131,3 +131,31 @@ export const publishForm = AsyncHandler(async (req, res, next) => {
 		},
 	});
 });
+
+export const getFormSubmissions = AsyncHandler(async (req, res, next) => {
+	const { id } = req.query;
+
+	if (!id) {
+		return next(new ErrorHandler(400, 'Form ID is required'));
+	}
+
+	const submissions = await prisma.form.findUnique({
+		where: {
+			id: Number(id),
+			userId: req.user,
+		},
+		include: {
+			FormSubmission: true,
+		},
+	});
+
+	if (!submissions) {
+		return next(new ErrorHandler(404, 'No submissions found for this form'));
+	}
+
+	return res.status(200).json({
+		success: true,
+		message: 'Form submissions fetched successfully',
+		data: submissions,
+	});
+});
