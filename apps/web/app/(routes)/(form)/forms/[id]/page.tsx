@@ -129,7 +129,7 @@ async function SubmissionsTable({ id }: { id: number }) {
 			}[];
 		}
 	>({
-		url: `/form-submissions/${id}`,
+		url: `/form/form-submissions/${id}`,
 		method: 'GET',
 		requireAuth: true,
 		throwOnError: false,

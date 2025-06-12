@@ -81,7 +81,7 @@ function FormBuider({ form }: { form: Form }) {
 						</div>
 						<div className="flex justify-between">
 							<Button variant={'link'} asChild>
-								<Link href={'/'} className="gap-2">
+								<Link href={'/form'} className="gap-2">
 									<BsArrowLeft />
 									Go back home
 								</Link>
