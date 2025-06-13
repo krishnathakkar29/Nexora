@@ -1,5 +1,6 @@
 import {
 	createForm,
+	getAllUserForms,
 	getContentByUrl,
 	getFormByID,
 	getFormStats,
@@ -14,12 +15,13 @@ import { Router } from 'express';
 const router: Router = Router();
 router.use(isAuthenticated);
 
-router.post('/get-stats', getFormStats);
+router.get('/get-stats', getFormStats);
 router.post('/create', createForm);
-router.get('/:id', getFormByID);
+router.get('/get/:id', getFormByID);
 router.post('/update', updateForm);
 router.post('/publish', publishForm);
 router.get('/form-submissions/:id', getFormSubmissions);
 router.get('/url/:formUrl', getContentByUrl);
 router.post('/submit', submitForm);
+router.get('/get-all', getAllUserForms);
 export default router;

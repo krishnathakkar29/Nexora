@@ -217,7 +217,6 @@ function ChatInterface({ chatId }: { chatId: string }) {
 		);
 	}
 
-	// console.log('Chat Data:', chatData);
 	return (
 		<div className="flex h-screen bg-slate-950 text-white overflow-hidden">
 			<AnimatePresence>

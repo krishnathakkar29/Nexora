@@ -35,20 +35,21 @@ function page() {
 	}
 	return (
 		<div className="max-w-md mx-auto">
+			<h1 className='w-full text-center md:text-2xl my-4 md:my-8'>SignIn</h1>
 			<form onSubmit={onSubmit} className="space-y-4">
 				<input
 					name="email"
 					type="email"
 					placeholder="Email"
 					required
-					className="w-full px-3 py-2 border rounded text-black"
+					className="w-full px-3 py-2 border rounded text-white"
 				/>
 				<input
 					name="password"
 					type="password"
 					placeholder="Password"
 					required
-					className="w-full px-3 py-2 border rounded text-black"
+					className="w-full px-3 py-2 border rounded text-white"
 				/>
 				<button
 					type="submit"

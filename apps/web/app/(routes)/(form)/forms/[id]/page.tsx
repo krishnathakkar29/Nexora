@@ -4,9 +4,13 @@ import StatsCard from '@/components/pages/form/stats-card';
 import VisitBtn from '@/components/pages/form/visit-btn';
 import { fetchAPIServer } from '@/lib/fetch-api-server';
 import { Form } from '@workspace/db';
+import { buttonVariants } from '@workspace/ui/components/button';
 import { Checkbox } from '@workspace/ui/components/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components/table';
+import { cn } from '@workspace/ui/lib/utils';
 import { formatDistance } from 'date-fns';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import { ReactNode } from 'react';
 import { FaWpforms } from 'react-icons/fa';
 import { HiCursorClick } from 'react-icons/hi';
@@ -23,7 +27,7 @@ async function page({
 }) {
 	const { id } = await params;
 	const form = await fetchAPIServer<Form>({
-		url: `/form/${id}`,
+		url: `/form/get/${id}`,
 		method: 'GET',
 		requireAuth: true,
 		throwOnError: false,
@@ -37,7 +41,7 @@ async function page({
 					<h2 className="text-lg font-semibold text-red-500">{form.message}</h2>
 					<button
 						className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-						onClick={() => toast.error('Failed to load form. Try Reloading....')}
+						// onClick={() => toast.error('Failed to load form. Try Reloading....')}
 					>
 						Retry
 					</button>
@@ -58,7 +62,18 @@ async function page({
 
 	return (
 		<>
-			<div className="py-10 border-b border-muted">
+			<div className="py-5 border-b border-muted">
+				<Link href="/form">
+					<ArrowLeft
+						className={cn(
+							buttonVariants({
+								size: 'icon',
+								variant: 'ghost',
+							}),
+							"my-4"
+						)}
+					/>
+				</Link>
 				<div className="flex justify-between container">
 					<h1 className="text-4xl font-bold truncate">{form.data.name}</h1>
 					<VisitBtn shareUrl={form.data.shareUrl} />

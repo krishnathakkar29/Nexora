@@ -33,27 +33,42 @@ function page() {
 		}
 	}
 	return (
-		<form onSubmit={onSubmit} className="space-y-4">
-			<input name="username" placeholder="Username" required className="w-full px-3 py-2 border rounded text-white" />
-			<input
-				name="email"
-				type="email"
-				placeholder="Email"
-				required
-				className="w-full px-3 py-2 border rounded text-white"
-			/>
-			<input
-				name="password"
-				type="password"
-				placeholder="Password"
-				required
-				className="w-full px-3 py-2 border rounded text-white"
-			/>
-			<button type="submit" disabled={loading} className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-				{loading ? 'Registering...' : 'Register'}
-			</button>
-			{error && <p className="text-red-500">{error}</p>}
-		</form>
+		<>
+			<div className="flex flex-col max-w-md mx-auto gap-4	">
+				<h1 className="w-full text-center md:text-2xl ">SignUp</h1>
+
+				<form onSubmit={onSubmit} className="space-y-4">
+					<input
+						name="username"
+						placeholder="Username"
+						required
+						className="w-full px-3 py-2 border rounded text-white"
+					/>
+					<input
+						name="email"
+						type="email"
+						placeholder="Email"
+						required
+						className="w-full px-3 py-2 border rounded text-white"
+					/>
+					<input
+						name="password"
+						type="password"
+						placeholder="Password"
+						required
+						className="w-full px-3 py-2 border rounded text-white"
+					/>
+					<button
+						type="submit"
+						disabled={loading}
+						className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+					>
+						{loading ? 'Registering...' : 'Register'}
+					</button>
+					{error && <p className="text-red-500">{error}</p>}
+				</form>
+			</div>
+		</>
 	);
 }
 

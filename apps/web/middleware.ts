@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const PROTECTED_PATHS = ['/mail(.*)', '/builder(.*)', '/dashboard', '/chat(.*)', '/chat/[chatId]'];
+const PROTECTED_PATHS = ['/mail(.*)', '/builder(.*)', '/forms(.*)', '/dashboard', '/chat(.*)', '/chat/[chatId]'];
 
 const AUTH_PATHS = ['/sign-in', '/sign-up'];
 
@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
 	}
 
 	if (isAuthPath && isAuthenticated) {
-		return NextResponse.redirect(new URL('/', request.url));
+		return NextResponse.redirect(new URL('/dashboard', request.url));
 	}
 
 	return NextResponse.next();

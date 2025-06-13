@@ -13,7 +13,7 @@ async function page({
 	const { id } = await params;
 
 	const form = await fetchAPIServer<Form>({
-		url: `/form/${id}`,
+		url: `/form/get/${id}`,
 		method: 'GET',
 		requireAuth: true,
 		throwOnError: false,

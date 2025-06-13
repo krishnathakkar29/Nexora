@@ -20,9 +20,9 @@ function FormLinkShare({ shareUrl }: { shareUrl: string }) {
 	const shareLink = `${window.location.origin}/submit/${shareUrl}`;
 	return (
 		<div className="flex flex-grow gap-4 items-center">
-			<Input value={shareLink} readOnly />
+			<Input value={shareLink} readOnly className='flex-2 overflow-x-auto' />
 			<Button
-				className="w-[250px]"
+				className="flex-1"
 				onClick={() => {
 					navigator.clipboard.writeText(shareLink);
 					toast.success('Link copied to clipboard');

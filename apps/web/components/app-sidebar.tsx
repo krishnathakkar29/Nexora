@@ -49,6 +49,28 @@ const data = {
 				},
 			],
 		},
+		{
+			title: 'Chat',
+			url: '#',
+			items: [
+				{
+					title: 'Chat Docs',
+					url: '/chat',
+				},
+				
+			],
+		},
+		{
+			title: 'Forms',
+			url: '#',
+			items: [
+				{
+					title: 'Your forms',
+					url: '/form',
+				},
+				
+			],
+		},
 	],
 };
 

@@ -183,12 +183,12 @@ export const getContentByUrl = AsyncHandler(async (req, res, next) => {
 		return next(new ErrorHandler(404, 'Form not found'));
 	}
 
-	const content = JSON.parse(form.content);
-
 	return res.status(200).json({
 		success: true,
 		message: 'Form content fetched successfully',
-		data: content,
+		data: {
+			content: form.content,
+		},
 	});
 });
 
@@ -226,5 +226,22 @@ export const submitForm = AsyncHandler(async (req, res, next) => {
 		data: {
 			formId: form.id,
 		},
+	});
+});
+
+export const getAllUserForms = AsyncHandler(async (req, res) => {
+	const forms = await prisma.form.findMany({
+		where: {
+			userId: req.user,
+		},
+		orderBy: {
+			createdAt: 'desc',
+		},
+	});
+	console.log(forms);
+	return res.status(200).json({
+		success: true,
+		message: 'Forms fetched successfully',
+		data: forms,
 	});
 });

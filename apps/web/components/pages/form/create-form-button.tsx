@@ -2,7 +2,7 @@
 import { fetchAPI } from '@/lib/fetch-api';
 import { formSchema } from '@/types/form/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@workspace/ui/components/button';
 import {
 	Dialog,
@@ -23,6 +23,8 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 function CreateFormButton() {
+	const queryClient = useQueryClient();
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 	});
@@ -48,7 +50,11 @@ function CreateFormButton() {
 	const handleSubmit = async (data: z.infer<typeof formSchema>) => {
 		mutateCreateForm(data, {
 			onSuccess: ({ formId }) => {
-				toast.success('Form created successfully');
+				toast.success('Form created successfully. Redirecting to builder.....', {
+					duration: 2000,
+				});
+				queryClient.invalidateQueries({ queryKey: ['all-forms-key'] });
+				queryClient.invalidateQueries({ queryKey: ['forms-stats'] });
 				router.push(`/builder/${formId}`);
 			},
 			onError: (err) => {
