@@ -6,8 +6,20 @@ import { Button } from '@workspace/ui/components/button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
+import {
+	Panel as ResizablePanelPrimitive,
+	PanelGroup as ResizablePanelGroupPrimitive,
+	PanelResizeHandle as ResizableHandlePrimitive,
+	type PanelProps,
+	type PanelGroupProps,
+	type PanelResizeHandleProps,
+} from 'react-resizable-panels';
+import type { FC } from 'react';
+import type { Message } from '@ai-sdk/react';
 
-import { Message } from '@ai-sdk/react';
+const ResizablePanel: FC<PanelProps> = ResizablePanelPrimitive;
+const ResizablePanelGroup: FC<PanelGroupProps> = ResizablePanelGroupPrimitive;
+const ResizableHandle: FC<PanelResizeHandleProps> = ResizableHandlePrimitive;
 
 const ChatSidebar = React.lazy(() => import('./chat-sidebar'));
 const PDFViewer = React.lazy(() => import('./pdf-viewer'));
@@ -23,11 +35,6 @@ type ChatData = {
 
 function ChatInterface({ chatId }: { chatId: string }) {
 	const [sidebarOpen, setSidebarOpen] = useState(true);
-	const [pdfWidth, setPdfWidth] = useState('60%');
-	const [chatWidth, setChatWidth] = useState('40%');
-	const resizingRef = useRef(false);
-	const startXRef = useRef(0);
-	const startWidthsRef = useRef({ pdf: 0, chat: 0 });
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -61,14 +68,6 @@ function ChatInterface({ chatId }: { chatId: string }) {
 			return response.data;
 		},
 	});
-
-	const initialMessages =
-		chatData?.chat.chatMessage.map((msg) => ({
-			id: msg.id,
-			content: msg.content,
-			role: msg.role.toLowerCase() as 'user' | 'assistant',
-			createdAt: msg.createdAt,
-		})) || [];
 
 	// Handle input change
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,6 +142,7 @@ function ChatInterface({ chatId }: { chatId: string }) {
 			setIsProcessing(false);
 		}
 	};
+
 	useEffect(() => {
 		if (chatData?.chat.chatMessage && messages.length === 0) {
 			const transformedMessages = chatData.chat.chatMessage.map((msg) => ({
@@ -158,39 +158,6 @@ function ChatInterface({ chatId }: { chatId: string }) {
 	useEffect(() => {
 		scrollToBottom();
 	}, [messages]);
-
-	// Handle resizing
-	const handleResizeStart = (e: React.MouseEvent) => {
-		e.preventDefault();
-		resizingRef.current = true;
-		startXRef.current = e.clientX;
-		startWidthsRef.current = {
-			pdf: Number.parseFloat(pdfWidth),
-			chat: Number.parseFloat(chatWidth),
-		};
-		document.addEventListener('mousemove', handleResize);
-		document.addEventListener('mouseup', handleResizeEnd);
-	};
-
-	const handleResize = (e: MouseEvent) => {
-		if (!resizingRef.current) return;
-
-		const deltaX = e.clientX - startXRef.current;
-		const containerWidth = document.getElementById('chat-container')?.offsetWidth || 1000;
-		const deltaPercent = (deltaX / containerWidth) * 100;
-
-		const newPdfWidth = Math.max(30, Math.min(70, startWidthsRef.current.pdf + deltaPercent));
-		const newChatWidth = 100 - newPdfWidth;
-
-		setPdfWidth(`${newPdfWidth}%`);
-		setChatWidth(`${newChatWidth}%`);
-	};
-
-	const handleResizeEnd = () => {
-		resizingRef.current = false;
-		document.removeEventListener('mousemove', handleResize);
-		document.removeEventListener('mouseup', handleResizeEnd);
-	};
 
 	if (isError) {
 		return (
@@ -219,26 +186,24 @@ function ChatInterface({ chatId }: { chatId: string }) {
 
 	return (
 		<div className="flex h-screen bg-slate-950 text-white overflow-hidden">
+			{/* Sidebar */}
 			<AnimatePresence>
 				{sidebarOpen && (
 					<motion.div
-						// initial={{ width: 0, opacity: 0 }}
-						// animate={{ width: '250px', opacity: 1 }}
-						// exit={{ width: 0, opacity: 0 }}
-						// transition={{ duration: 0.1 }}
+						initial={{ width: 0, opacity: 0 }}
+						animate={{ width: '250px', opacity: 1 }}
+						exit={{ width: 0, opacity: 0 }}
+						transition={{ duration: 0.3, ease: 'easeInOut' }}
 						className="h-full border-r border-slate-800 bg-slate-900/50 backdrop-blur-lg z-20"
 					>
-						{/* {useMemo(
-							() => ( */}
 						<ChatSidebar chatId={chatId} onClose={() => setSidebarOpen(false)} />
-						{/* ),
-							[chatId],
-						)} */}
 					</motion.div>
 				)}
 			</AnimatePresence>
 
-			<div id="chat-container" className="flex flex-1 h-full relative">
+			{/* Main content area */}
+			<div className="flex-1 h-full relative">
+				{/* Sidebar toggle button */}
 				<Button
 					variant="ghost"
 					size="icon"
@@ -248,48 +213,54 @@ function ChatInterface({ chatId }: { chatId: string }) {
 					{sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
 				</Button>
 
-				<div className="h-full overflow-hidden bg-slate-900/30 backdrop-blur-sm" style={{ width: pdfWidth }}>
-					{isLoading ? (
-						<div className="h-full flex items-center justify-center">
-							<div className="text-center">
-								<div className="w-16 h-16 border-4 border-t-blue-500 border-slate-700 rounded-full animate-spin mx-auto mb-4"></div>
-								<p className="text-slate-400">Loading PDF...</p>
+				{/* Resizable panel group for PDF and Chat */}
+				<ResizablePanelGroup direction="horizontal" className="h-full" id="chat-container">
+					{/* PDF Panel */}
+					<ResizablePanel
+						defaultSize={60}
+						minSize={30}
+						maxSize={70}
+						className="h-full overflow-hidden bg-slate-900/30 backdrop-blur-sm"
+					>
+						{isLoading ? (
+							<div className="h-full flex items-center justify-center">
+								<div className="text-center">
+									<div className="w-16 h-16 border-4 border-t-blue-500 border-slate-700 rounded-full animate-spin mx-auto mb-4"></div>
+									<p className="text-slate-400">Loading PDF...</p>
+								</div>
 							</div>
-						</div>
-					) : (
-						<PDFViewer pdfUrl={chatData?.chat.pdfUrl ?? ''} />
-					)}
-				</div>
+						) : (
+							<PDFViewer pdfUrl={chatData?.chat.pdfUrl ?? ''} />
+						)}
+					</ResizablePanel>
 
-				{/* Resize handle */}
-				<div
-					className="w-1 h-full bg-slate-800 hover:bg-blue-500 cursor-col-resize transition-colors duration-150 flex items-center justify-center"
-					onMouseDown={handleResizeStart}
-				>
-					<div className="w-1 h-20 bg-slate-600 rounded-full"></div>
-				</div>
+					{/* Resize Handle */}
+					<ResizableHandle className="bg-slate-800 hover:bg-blue-500 transition-colors duration-150" />
 
-				<div className="h-full flex flex-col bg-slate-950" style={{ width: chatWidth }}>
-					<ChatHeader
-						title={chatData?.chat.pdfName || 'Chat'}
-						isLoading={isLoading}
-						messageCount={chatData?.chat.chatMessage.length || 0}
-					/>
-					<ChatMessages
-						messages={messages}
-						isLoading={isLoading}
-						isProcessing={isProcessing}
-						messagesEndRef={messagesEndRef}
-					/>
-
-					<ChatInput
-						input={input}
-						handleInputChange={handleInputChange}
-						handleSubmit={handleSubmit}
-						isProcessing={isProcessing}
-						disabled={isLoading}
-					/>
-				</div>
+					{/* Chat Panel */}
+					<ResizablePanel defaultSize={40} minSize={30} maxSize={70} className="h-full flex flex-col bg-slate-950">
+						<>
+							<ChatHeader
+								title={chatData?.chat.pdfName || 'Chat'}
+								isLoading={isLoading}
+								messageCount={chatData?.chat.chatMessage.length || 0}
+							/>
+							<ChatMessages
+								messages={messages}
+								isLoading={isLoading}
+								isProcessing={isProcessing}
+								messagesEndRef={messagesEndRef}
+							/>
+							<ChatInput
+								input={input}
+								handleInputChange={handleInputChange}
+								handleSubmit={handleSubmit}
+								isProcessing={isProcessing}
+								disabled={isLoading}
+							/>
+						</>
+					</ResizablePanel>
+				</ResizablePanelGroup>
 			</div>
 		</div>
 	);

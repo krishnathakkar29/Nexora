@@ -2,12 +2,15 @@
 
 import { fetchAPI } from '@/lib/fetch-api';
 import { useQuery } from '@tanstack/react-query';
-import { ChatPdf } from '@workspace/db';
+import { ChatPdf, Prisma } from '@workspace/db';
 import FileUpload from './file-upload';
 import ChatCard from './chat-card';
 import { Skeleton } from '@workspace/ui/components/skeleton';
 import ChatCardSkeleton from '@/components/skeleton/chat-card-skeleton';
 
+export type ChatPdfWithCount = Prisma.ChatPdfGetPayload<{
+	include: { _count: true };
+}>;
 function Chats() {
 	const {
 		data: userChats = [],
@@ -15,8 +18,8 @@ function Chats() {
 		isError,
 		error,
 		refetch,
-	} = useQuery<ChatPdf[]>({
-		queryKey: ['mail-history'],
+	} = useQuery<ChatPdfWithCount[]>({
+		queryKey: ['chat-pdfs'],
 		queryFn: async () => {
 			const response = await fetchAPI({
 				url: '/chat/pdfs',

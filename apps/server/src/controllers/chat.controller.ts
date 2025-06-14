@@ -19,14 +19,17 @@ export const getChatPdfs = AsyncHandler(async (req, res, next) => {
 		where: {
 			userId: user,
 		},
+		include: {
+			_count: true,
+		},
 	});
+
+	console.log('chatPdfs', chatPdfs);
 
 	return res.status(200).json({
 		status: true,
 		message: 'Chat PDFs fetched successfully.',
-		data: {
-			chatPdfs,
-		},
+		data: chatPdfs,
 	});
 });
 

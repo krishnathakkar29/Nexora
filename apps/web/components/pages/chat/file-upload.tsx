@@ -87,7 +87,7 @@ const FileUpload = () => {
 					}`,
 				})}
 			>
-				<input {...getInputProps()} />
+				<input {...getInputProps()} disabled={isLoading} />
 
 				{/* Main upload area */}
 				<div

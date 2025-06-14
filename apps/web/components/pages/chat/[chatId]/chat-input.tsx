@@ -87,7 +87,6 @@ export default function ChatInput({
 					<div>Press Shift + Enter for a new line</div>
 					<div className="flex items-center space-x-2">
 						{disabled && <span className="text-amber-500">Loading...</span>}
-						<span>Powered by AI</span>
 					</div>
 				</div>
 			</form>

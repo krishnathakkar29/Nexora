@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ChatPdfWithCount } from './chats';
 
 interface Chat {
 	id: string;
@@ -17,12 +18,12 @@ interface Chat {
 }
 
 interface ChatCardProps {
-	chat: Chat;
+	chat: ChatPdfWithCount;
 }
 
 export default function ChatCard({ chat }: ChatCardProps) {
 	const [isHovered, setIsHovered] = useState(false);
-
+	console.log(chat);
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -66,7 +67,7 @@ export default function ChatCard({ chat }: ChatCardProps) {
 					<div className="flex items-center space-x-4 mb-6">
 						<div className="flex items-center space-x-2">
 							<MessageCircle className="w-4 h-4 text-slate-400" />
-							<span className="text-sm text-slate-400">0 messages</span>
+							<span className="text-sm text-slate-400">{chat._count.chatMessage} messages</span>
 						</div>
 						<div className="w-1 h-1 bg-slate-600 rounded-full" />
 						<span className="text-sm text-slate-400">PDF</span>
