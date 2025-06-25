@@ -187,7 +187,7 @@ export function FormCard({ form }: { form: Form }) {
 			<CardFooter>
 				{form.published && (
 					<Link
-						href={`/forms/${form.id}`}
+						href={`/form/forms/${form.id}`}
 						className={cn(
 							buttonVariants({
 								variant: 'secondary',

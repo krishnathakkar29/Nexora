@@ -25,7 +25,6 @@ async function page({
 	});
 
 	if (!form.success) {
-		console.log('Error fetching form:', form.message);
 		return (
 			<>
 				<div className="flex flex-col items-center justify-center w-full h-full">
