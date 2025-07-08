@@ -30,6 +30,8 @@ function page() {
 			platform: '',
 			companyName: '',
 			body: '',
+			apppassword: '',
+			appusername: '',
 		},
 	});
 
@@ -67,6 +69,8 @@ function page() {
 				formData.append('subject', data.subject);
 				formData.append('platform', data.platform);
 				formData.append('companyName', data.companyName);
+				formData.append('appUsername', data.appusername);
+				formData.append('appPassword', data.apppassword);
 				formData.append('body', formattedBody);
 
 				files.forEach((file) => {
@@ -297,6 +301,36 @@ function page() {
 											/>
 										)}
 									</div>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+
+					<div className="space-y-3">
+						<FormField
+							control={form.control}
+							name="appusername"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Company Name</FormLabel>
+									<FormControl>
+										<Input {...field} placeholder="Enter App Username" />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<FormField
+							control={form.control}
+							name="apppassword"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Platform</FormLabel>
+									<FormControl>
+										<Input {...field} placeholder="Enter App Password" />
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}

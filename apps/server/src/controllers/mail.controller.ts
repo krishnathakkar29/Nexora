@@ -1,4 +1,5 @@
 import { AsyncHandler } from '@/middlewares/error.js';
+import app from '@/routes/user.routes.js';
 import ErrorHandler from '@/utils/errorHandler.js';
 import { s3Upload } from '@/utils/s3.js';
 import { BulkMailArr } from '@/utils/types.js';
@@ -6,7 +7,7 @@ import { emailQueue, mailQueueName } from '@workspace/common/mail-queue';
 import { prisma } from '@workspace/db';
 
 export const sendMail = AsyncHandler(async (req, res, next) => {
-	const { recipients, subject, platform, companyName, body: emailBody } = req.body;
+	const { recipients, subject, platform, companyName, body: emailBody, appUsername, appPassword } = req.body;
 	let recipientsArr: string[] = Array.isArray(recipients) ? recipients : [recipients];
 	const files = req.files;
 
@@ -71,7 +72,6 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 
 				attachmentIds = attachments.map((attachment) => attachment.fileUrl);
 			}
-
 			await emailQueue.add(mailQueueName, {
 				userId: req.user,
 				emailId: emailSent.id,
@@ -79,6 +79,8 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 				subject,
 				body: emailBody,
 				attachmentIds,
+				appUsername,
+				appPassword,
 			});
 
 			return emailSent;
@@ -125,7 +127,7 @@ export const getMailHistory = AsyncHandler(async (req, res, next) => {
 });
 
 export const bulkMailSender = AsyncHandler(async (req, res, next) => {
-	const { emails } = req.body;
+	const { emails, appUsername, appPassword } = req.body;
 	let parsedMails = JSON.parse(emails);
 	let emailsArr: BulkMailArr[] = Array.isArray(parsedMails) ? parsedMails : [parsedMails];
 
@@ -199,7 +201,7 @@ export const bulkMailSender = AsyncHandler(async (req, res, next) => {
 
 				attachmentIds = attachments.map((attachment) => attachment.fileUrl);
 			}
-
+			console.log(appUsername, appPassword);
 			await emailQueue.add(mailQueueName, {
 				userId: req.user,
 				emailId: emailSent.id,
@@ -207,6 +209,8 @@ export const bulkMailSender = AsyncHandler(async (req, res, next) => {
 				subject: email.subject,
 				body: email.subject,
 				attachmentIds,
+				appUsername,
+				appPassword,
 			});
 
 			return emailSent;

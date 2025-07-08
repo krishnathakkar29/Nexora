@@ -24,6 +24,8 @@ export default function BulkEmailSender() {
 	const [emailData, setEmailData] = useState<MailData[]>([]);
 	const [emailBody, setEmailBody] = useState('');
 	const [attachments, setAttachments] = useState<File[]>([]);
+	const [appUsername, setAppUsername] = useState('');
+	const [appPassword, setAppPassword] = useState('');
 
 	const queryClient = useQueryClient();
 
@@ -49,6 +51,16 @@ export default function BulkEmailSender() {
 					return;
 				}
 
+				if (!appUsername.trim()) {
+					toast.error('App Username is required');
+					return;
+				}
+
+				if (!appPassword.trim()) {
+					toast.error('App Password is required');
+					return;
+				}
+
 				console.log('Sending emails to the following recipients:');
 
 				const emailObjects = selectedRecipients.map((recipient) => {
@@ -71,11 +83,13 @@ export default function BulkEmailSender() {
 					};
 				});
 
-				// Create FormData object for backend processing
+				
 				const formData = new FormData();
 				formData.append('emails', JSON.stringify(emailObjects));
+				formData.append('appUsername', appUsername);
+				formData.append('appPassword', appPassword);
 
-				// Add attachments using the specified format
+				
 				attachments.forEach((file) => {
 					formData.append('files', file);
 				});
@@ -138,6 +152,40 @@ export default function BulkEmailSender() {
 						attachments={attachments}
 						setAttachments={setAttachments}
 					/>
+				</div>
+			)}
+
+			{emailData.length > 0 && (
+				<div className="bg-gray-900 p-6 rounded-lg border border-gray-800">
+					<h2 className="text-xl font-semibold mb-4">4. Email Credentials</h2>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="space-y-2">
+							<label htmlFor="appUsername" className="block text-sm font-medium text-gray-300">
+								App Username
+							</label>
+							<input
+								id="appUsername"
+								type="text"
+								value={appUsername}
+								onChange={(e) => setAppUsername(e.target.value)}
+								placeholder="Enter App Username"
+								className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							/>
+						</div>
+						<div className="space-y-2">
+							<label htmlFor="appPassword" className="block text-sm font-medium text-gray-300">
+								App Password
+							</label>
+							<input
+								id="appPassword"
+								type="password"
+								value={appPassword}
+								onChange={(e) => setAppPassword(e.target.value)}
+								placeholder="Enter App Password"
+								className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							/>
+						</div>
+					</div>
 				</div>
 			)}
 
