@@ -16,7 +16,6 @@ import { FaWpforms } from 'react-icons/fa';
 import { HiCursorClick } from 'react-icons/hi';
 import { LuView } from 'react-icons/lu';
 import { TbArrowBounce } from 'react-icons/tb';
-import { toast } from 'sonner';
 
 async function page({
 	params,
@@ -70,7 +69,7 @@ async function page({
 								size: 'icon',
 								variant: 'ghost',
 							}),
-							"my-4"
+							'my-4',
 						)}
 					/>
 				</Link>

@@ -122,6 +122,7 @@ function FormComponent({
 			</Label>
 			<Select
 				defaultValue={value}
+				// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 				onValueChange={(value: string | any) => {
 					setValue(value);
 					if (!submitValue) return;
@@ -150,6 +151,7 @@ type PropertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
 	const element = elementInstance as CustomInstance;
 	const { updateElement, setSelectedElement } = useDesigner();
+	// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 	const form = useForm<PropertiesFormSchemaType, any, PropertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
 		mode: 'onSubmit',

@@ -115,7 +115,7 @@ export async function fetchAPI<
 		});
 
 		const responseData = await response.json();
-console.log('Response Data:', responseData);
+		console.log('Response Data:', responseData);
 		if (!response.ok) {
 			return {
 				success: false,

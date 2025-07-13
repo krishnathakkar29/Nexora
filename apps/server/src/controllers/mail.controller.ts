@@ -1,14 +1,13 @@
 import { AsyncHandler } from '@/middlewares/error.js';
-import app from '@/routes/user.routes.js';
 import ErrorHandler from '@/utils/errorHandler.js';
 import { s3Upload } from '@/utils/s3.js';
 import { BulkMailArr } from '@/utils/types.js';
 import { emailQueue, mailQueueName } from '@workspace/common/mail-queue';
 import { prisma } from '@workspace/db';
 
-export const sendMail = AsyncHandler(async (req, res, next) => {
+export const sendMail = AsyncHandler(async (req, res) => {
 	const { recipients, subject, platform, companyName, body: emailBody, appUsername, appPassword } = req.body;
-	let recipientsArr: string[] = Array.isArray(recipients) ? recipients : [recipients];
+	const recipientsArr: string[] = Array.isArray(recipients) ? recipients : [recipients];
 	const files = req.files;
 
 	let uploadedFiles: {
@@ -96,9 +95,7 @@ export const sendMail = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-export const getMailHistory = AsyncHandler(async (req, res, next) => {
-	const userId = req.user;
-
+export const getMailHistory = AsyncHandler(async (req, res) => {
 	const getContacts = await prisma.contact.findMany({
 		where: {
 			userId: req.user,
@@ -126,10 +123,10 @@ export const getMailHistory = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-export const bulkMailSender = AsyncHandler(async (req, res, next) => {
+export const bulkMailSender = AsyncHandler(async (req, res) => {
 	const { emails, appUsername, appPassword } = req.body;
-	let parsedMails = JSON.parse(emails);
-	let emailsArr: BulkMailArr[] = Array.isArray(parsedMails) ? parsedMails : [parsedMails];
+	const parsedMails = JSON.parse(emails);
+	const emailsArr: BulkMailArr[] = Array.isArray(parsedMails) ? parsedMails : [parsedMails];
 
 	const files = req.files;
 

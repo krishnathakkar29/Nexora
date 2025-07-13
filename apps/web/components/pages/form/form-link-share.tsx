@@ -20,7 +20,7 @@ function FormLinkShare({ shareUrl }: { shareUrl: string }) {
 	const shareLink = `${window.location.origin}/submit/${shareUrl}`;
 	return (
 		<div className="flex flex-grow gap-4 items-center">
-			<Input value={shareLink} readOnly className='flex-2 overflow-x-auto' />
+			<Input value={shareLink} readOnly className="flex-2 overflow-x-auto" />
 			<Button
 				className="flex-1"
 				onClick={() => {

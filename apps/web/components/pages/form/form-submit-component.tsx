@@ -14,6 +14,7 @@ function FormSubmitComponent({ formUrl, content }: { content: FormElementInstanc
 	const formErrors = useRef<{ [key: string]: boolean }>({});
 
 	const [submitted, setSubmitted] = useState(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [pending, startTransition] = useTransition();
 
 	const validateForm: () => boolean = useCallback(() => {
@@ -39,6 +40,7 @@ function FormSubmitComponent({ formUrl, content }: { content: FormElementInstanc
 
 	const { mutate: mutateSubmitForm, isPending } = useMutation({
 		mutationKey: ['submit-form'],
+		// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 		mutationFn: async (data: any) => {
 			const response = await fetchAPI({
 				url: '/form/submit',

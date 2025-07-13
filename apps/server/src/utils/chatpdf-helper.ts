@@ -12,16 +12,16 @@ export const truncateStringByBytes = (str: string, bytes: number) => {
 };
 
 export async function prepareDocument(page: PDFPage) {
-	let { pageContent, metadata } = page;
-	pageContent = pageContent.replace(/\n/g, '');
+	const { pageContent, metadata } = page;
+	const cleanedPageContent = pageContent.replace(/\n/g, '');
 	// splitting the docs
 	const splitter = new RecursiveCharacterTextSplitter();
 	const docs = await splitter.splitDocuments([
 		new Document({
-			pageContent,
+			pageContent: cleanedPageContent,
 			metadata: {
 				pageNumber: metadata.loc.pageNumber,
-				text: truncateStringByBytes(pageContent, 36000),
+				text: truncateStringByBytes(cleanedPageContent, 36000),
 			},
 		}),
 	]);
@@ -50,7 +50,7 @@ export async function embedDocument(doc: Document) {
 export function convertToAscii(inputString: string) {
 	// remove non ascii characters
 	console.log('converting to ascii', inputString);
-	const asciiString = inputString.replace(/[^\x00-\x7F]/g, '');
+	const asciiString = inputString.replace(/[^\x00-\x7F]/g, ''); // eslint-disable-line no-control-regex
 	return asciiString;
 }
 
@@ -77,14 +77,15 @@ export async function getContext(query: string, fileKey: string) {
 	console.log('fileKey', fileKey);
 	const matches = await getMatchesFromEmbeddings(queryEmbeddings, fileKey);
 
-	const qualifyingDocs = matches.filter((match) => match.score && match.score > 0.1);
+	// Note: qualifyingDocs filtering removed as it was unused
+	// const qualifyingDocs = matches.filter((match) => match.score && match.score > 0.1);
 
 	type Metadata = {
 		text: string;
 		pageNumber: number;
 	};
 
-	let docs = matches.map((match) => (match.metadata as Metadata).text);
+	const docs = matches.map((match) => (match.metadata as Metadata).text);
 	// 5 vectors
 	return docs.join('\n').substring(0, 3000);
 }

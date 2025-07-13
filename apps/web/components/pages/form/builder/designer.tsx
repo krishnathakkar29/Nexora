@@ -140,7 +140,7 @@ function Designer() {
 
 function DesignerElementWrapper({ element }: { element: FormElementInstance }) {
 	const DesignerElement = FormElements[element.type].designerComponent;
-
+	// eslint-disable-next-line  @typescript-eslint/no-unused-vars
 	const { removeElement, selectedElement, setSelectedElement } = useDesigner();
 
 	const [mouseIsOver, setMouseIsOver] = useState<boolean>(false);

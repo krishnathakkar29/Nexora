@@ -1,15 +1,15 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { fetchAPI } from '@/lib/fetch-api';
+import { useQuery } from '@tanstack/react-query';
 import { Button, buttonVariants } from '@workspace/ui/components/button';
-import { FileText, PlusCircle, X, Search, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@workspace/ui/components/skeleton';
 import { cn } from '@workspace/ui/lib/utils';
-import { memo } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { ArrowLeft, FileText, X } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { memo } from 'react';
 
 function ChatSidebar({ chatId, onClose }: { chatId: string; onClose: () => void }) {
 	// Fetch all user chats
@@ -91,6 +91,7 @@ function ChatSidebar({ chatId, onClose }: { chatId: string; onClose: () => void 
 					</div>
 				) : (
 					<div className="space-y-1 p-2">
+						{/*eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
 						{chats.map((chat: any) => (
 							<Link key={chat.id} href={`/chat/${chat.id}`}>
 								<div

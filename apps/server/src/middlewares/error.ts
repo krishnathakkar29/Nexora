@@ -2,7 +2,7 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import { envMode } from '../index.js';
 import ErrorHandler from '@/utils/errorHandler.js';
 
-export const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
+export const errorMiddleware: ErrorRequestHandler = (err, req, res) => {
 	err.message ||= 'Internal Server Error';
 	err.statusCode = err.statusCode || 500;
 

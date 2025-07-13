@@ -133,6 +133,7 @@ type PropertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
 	const element = elementInstance as CustomInstance;
 	const { updateElement } = useDesigner();
+	// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 	const form = useForm<PropertiesFormSchemaType, any, PropertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
 		mode: 'onBlur',

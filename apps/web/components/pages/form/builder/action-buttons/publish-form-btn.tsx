@@ -23,7 +23,7 @@ function PublishFormBtn({ id }: { id: number }) {
 
 	const queryClient = useQueryClient();
 
-	const { mutate, isPending } = useMutation({
+	const { mutate } = useMutation({
 		mutationFn: async () => {
 			const response = await fetchAPI({
 				url: '/form/publish',
@@ -41,7 +41,7 @@ function PublishFormBtn({ id }: { id: number }) {
 
 			return response.data;
 		},
-		onSuccess(data, variables, context) {
+		onSuccess() {
 			toast.success('Your form has been published successfully');
 
 			queryClient.invalidateQueries({

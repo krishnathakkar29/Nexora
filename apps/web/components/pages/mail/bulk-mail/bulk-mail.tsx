@@ -83,13 +83,11 @@ export default function BulkEmailSender() {
 					};
 				});
 
-				
 				const formData = new FormData();
 				formData.append('emails', JSON.stringify(emailObjects));
 				formData.append('appUsername', appUsername);
 				formData.append('appPassword', appPassword);
 
-				
 				attachments.forEach((file) => {
 					formData.append('files', file);
 				});

@@ -1,24 +1,18 @@
 'use client';
 
+import ChatCardSkeleton from '@/components/skeleton/chat-card-skeleton';
 import { fetchAPI } from '@/lib/fetch-api';
 import { useQuery } from '@tanstack/react-query';
-import { ChatPdf, Prisma } from '@workspace/db';
-import FileUpload from './file-upload';
-import ChatCard from './chat-card';
+import { Prisma } from '@workspace/db';
 import { Skeleton } from '@workspace/ui/components/skeleton';
-import ChatCardSkeleton from '@/components/skeleton/chat-card-skeleton';
+import ChatCard from './chat-card';
+import FileUpload from './file-upload';
 
 export type ChatPdfWithCount = Prisma.ChatPdfGetPayload<{
 	include: { _count: true };
 }>;
 function Chats() {
-	const {
-		data: userChats = [],
-		isLoading,
-		isError,
-		error,
-		refetch,
-	} = useQuery<ChatPdfWithCount[]>({
+	const { data: userChats = [], isLoading } = useQuery<ChatPdfWithCount[]>({
 		queryKey: ['chat-pdfs'],
 		queryFn: async () => {
 			const response = await fetchAPI({

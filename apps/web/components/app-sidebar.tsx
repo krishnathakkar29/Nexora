@@ -1,12 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { BookOpen, Bot, Command, Frame, LifeBuoy, Map, PieChart, Send, Settings2, SquareTerminal } from 'lucide-react';
 
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarGroupLabel,
@@ -14,7 +12,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarRail,
+	SidebarRail
 } from '@workspace/ui/components/sidebar';
 import Link from 'next/link';
 
@@ -57,7 +55,6 @@ const data = {
 					title: 'Chat Docs',
 					url: '/chat',
 				},
-				
 			],
 		},
 		{
@@ -68,7 +65,6 @@ const data = {
 					title: 'Your forms',
 					url: '/form',
 				},
-				
 			],
 		},
 	],

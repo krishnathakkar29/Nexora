@@ -74,7 +74,7 @@ type CustomInstance = FormElementInstance & {
 
 function DesignerComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
 	const element = elementInstance as CustomInstance;
-	const { label, required, placeHolder, helperText, rows } = element.extraAttributes;
+	const { label, required, placeHolder, helperText } = element.extraAttributes;
 	return (
 		<div className="flex flex-col gap-2 w-full">
 			<Label>
@@ -138,6 +138,7 @@ type PropertiesFormSchemaType = z.infer<typeof propertiesSchema>;
 function PropertiesComponent({ elementInstance }: { elementInstance: FormElementInstance }) {
 	const element = elementInstance as CustomInstance;
 	const { updateElement } = useDesigner();
+	// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 	const form = useForm<PropertiesFormSchemaType, any, PropertiesFormSchemaType>({
 		resolver: zodResolver(propertiesSchema),
 		mode: 'onBlur',

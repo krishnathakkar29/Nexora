@@ -104,7 +104,7 @@ function FormComponent({
 		setError(isInvalid === true);
 	}, [isInvalid]);
 
-	const { label, required, placeHolder, helperText } = element.extraAttributes;
+	const { label, required, helperText } = element.extraAttributes;
 	const id = `checkbox-${element.id}`;
 	return (
 		<div className="flex items-top space-x-2">
@@ -142,6 +142,7 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 	const element = elementInstance as CustomInstance;
 	const { updateElement } = useDesigner();
 	const form = useForm<PropertiesFormSchemaType, any, PropertiesFormSchemaType>({
+		 
 		resolver: zodResolver(propertiesSchema),
 		mode: 'onBlur',
 		defaultValues: {

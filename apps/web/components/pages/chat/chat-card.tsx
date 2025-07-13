@@ -1,21 +1,13 @@
 'use client';
 
-import { Card } from '@workspace/ui/components/card';
 import { Button } from '@workspace/ui/components/button';
-import { FileText, MessageCircle, Calendar, ArrowRight, Trash2 } from 'lucide-react';
-import Link from 'next/link';
+import { Card } from '@workspace/ui/components/card';
 import { formatDistanceToNow } from 'date-fns';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { ArrowRight, Calendar, FileText, MessageCircle, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 import { ChatPdfWithCount } from './chats';
-
-interface Chat {
-	id: string;
-	pdfName: string;
-	pdfUrl: string;
-	createdAt: Date;
-	updatedAt: Date;
-}
 
 interface ChatCardProps {
 	chat: ChatPdfWithCount;

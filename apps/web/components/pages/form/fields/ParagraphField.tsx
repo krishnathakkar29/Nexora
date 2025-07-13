@@ -1,17 +1,16 @@
 'use client';
 
-import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from '../builder/form-element';
 import { Label } from '@workspace/ui/components/label';
 import { z } from 'zod';
+import { ElementsType, FormElement, FormElementInstance } from '../builder/form-element';
 
-import { zodResolver } from '@workspace/ui/hooks/form';
-import { useForm } from '@workspace/ui/hooks/form';
-import { useEffect } from 'react';
 import useDesigner from '@/hooks/use-designer';
+import { useForm, zodResolver } from '@workspace/ui/hooks/form';
+import { useEffect } from 'react';
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@workspace/ui/components/form';
-import { BsTextParagraph } from 'react-icons/bs';
 import { Textarea } from '@workspace/ui/components/textarea';
+import { BsTextParagraph } from 'react-icons/bs';
 
 const type: ElementsType = 'ParagraphField';
 

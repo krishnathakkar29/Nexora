@@ -10,9 +10,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY!);
 
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
-export const getChatPdfs = AsyncHandler(async (req, res, next) => {
+export const getChatPdfs = AsyncHandler(async (req, res) => {
 	const user = req.user;
 
 	const chatPdfs = await prisma.chatPdf.findMany({
@@ -24,8 +22,6 @@ export const getChatPdfs = AsyncHandler(async (req, res, next) => {
 		},
 	});
 
-	console.log('chatPdfs', chatPdfs);
-
 	return res.status(200).json({
 		status: true,
 		message: 'Chat PDFs fetched successfully.',
@@ -36,7 +32,7 @@ export const getChatPdfs = AsyncHandler(async (req, res, next) => {
 export const uploadPdfToS3 = AsyncHandler(async (req, res, next) => {
 	const file = req.file as Express.Multer.File;
 
-	let uploadedFile: {
+	const uploadedFile: {
 		fileKey: string;
 		fileName: string;
 		url: string;
@@ -125,7 +121,7 @@ export const getChat = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-export const getAllChats = AsyncHandler(async (req, res, next) => {
+export const getAllChats = AsyncHandler(async (req, res) => {
 	const chats = await prisma.chatPdf.findMany({
 		where: {
 			userId: req.user,

@@ -82,7 +82,7 @@ export const getFormByID = AsyncHandler(async (req, res, next) => {
 	});
 });
 
-export const updateForm = AsyncHandler(async (req, res, next) => {
+export const updateForm = AsyncHandler(async (req, res) => {
 	const { id, content: jsonContent } = req.body;
 
 	await prisma.form.update({

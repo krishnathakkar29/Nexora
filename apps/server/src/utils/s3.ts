@@ -36,6 +36,7 @@ export const s3Upload = async (file: Express.Multer.File) => {
 };
 
 export const s3Download = async (fileKey: string) => {
+	// eslint-disable-next-line no-async-promise-executor
 	return new Promise(async (resolve, reject) => {
 		try {
 			const s3 = new S3({

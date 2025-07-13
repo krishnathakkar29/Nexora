@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 export type TNoParams = Record<string, never>;
 
 export type FetchRequestParams<
+	// eslint-disable-next-line  @typescript-eslint/no-unused-vars
 	ResponseDataT = TNoParams,
 	UrlParamsT = TNoParams,
 	BodyParamsT = TNoParams,
@@ -27,6 +28,7 @@ type ErrorResponse = {
 	message: string;
 	error?: {
 		statusCode?: number;
+		// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 		[key: string]: any;
 	};
 };
@@ -41,6 +43,7 @@ type FetchAPIResult<DataT> = ErrorResponse | SuccessResponse<DataT>;
 
 export async function fetchAPIServer<
 	ResponseDataT = any,
+	// eslint-disable-next-line  @typescript-eslint/no-unused-vars
 	ErrorBodyT = { success: false; message: string; error?: unknown },
 	UrlParamsT = TNoParams,
 	BodyParamsT = TNoParams,

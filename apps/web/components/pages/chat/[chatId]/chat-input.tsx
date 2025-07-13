@@ -9,6 +9,7 @@ import { type FormEvent, useState } from 'react';
 interface ChatInputProps {
 	input: string;
 	// handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+	// eslint-disable-next-line  @typescript-eslint/no-explicit-any
 	handleInputChange: any;
 	handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
 	isProcessing: boolean;

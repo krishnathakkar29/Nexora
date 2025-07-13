@@ -30,7 +30,7 @@ function SaveFormBtn({ id }: { id: number }) {
 
 			return response.data;
 		},
-		onSuccess(data, variables, context) {
+		onSuccess() {
 			toast.success('Form saved successfully');
 		},
 	});
