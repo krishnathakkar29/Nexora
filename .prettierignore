@@ -3,3 +3,54 @@ node_modules
 .env
 package.json
 dist
+
+# Node dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+build
+.next
+out
+generated
+coverage
+
+# Database (Prisma) generated files
+packages/db/generated/
+
+# Static assets and public
+apps/web/public/
+
+# Env files
+*.env
+**/*.env
+
+# Lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Turbo outputs
+turbo
+**/.turbo
+
+# Cache
+**/.cache
+**/.eslintcache
+
+# IDE and OS files
+.vscode
+.DS_Store
+
+# Markdown assets or scratch files
+notes.txt
+
+# Ignore prisma migrations if you don't want Prettier to format them
+packages/db/prisma/migrations/
+
+# Ignore compiled types (if any exist or are generated)
+**/types/**/*.d.ts
+
+# Ignore compiled JavaScript (if present)
+**/*.js

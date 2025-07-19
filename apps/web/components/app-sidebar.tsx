@@ -12,7 +12,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarRail
+	SidebarRail,
 } from '@workspace/ui/components/sidebar';
 import Link from 'next/link';
 

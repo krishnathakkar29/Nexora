@@ -88,7 +88,6 @@ function PropertiesComponent({ elementInstance }: { elementInstance: FormElement
 	const element = elementInstance as CustomInstance;
 	const { updateElement } = useDesigner();
 	const form = useForm<PropertiesFormSchemaType, any, PropertiesFormSchemaType>({
-		 
 		resolver: zodResolver(propertiesSchema),
 		mode: 'onBlur',
 		defaultValues: {

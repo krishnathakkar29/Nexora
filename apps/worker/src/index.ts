@@ -39,6 +39,7 @@ function getFilenameFromUrl(url: string): string {
 		const filename = pathname.split('/').pop() || 'attachment';
 		return filename;
 	} catch (error) {
+		console.log(`Failed to extract filename from URL ${url}:`, error);
 		return 'attachment';
 	}
 }
@@ -133,6 +134,7 @@ emailWorker.on('completed', async (job: Job) => {
 
 	const jobData = job.data as JobData;
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const updatedEmail = await prisma.emailSent.update({
 		where: {
 			id: jobData.emailId,
