@@ -48,9 +48,18 @@ notes.txt
 
 # Ignore prisma migrations if you don't want Prettier to format them
 packages/db/prisma/migrations/
+packages/db/prisma/generated/
+packages/db/prisma/node_modules/
+
 
 # Ignore compiled types (if any exist or are generated)
 **/types/**/*.d.ts
 
 # Ignore compiled JavaScript (if present)
 **/*.js
+# Public assets (usually shouldn't be formatted)
+**/public/
+**/static/
+
+# Configuration files that shouldn't be auto-formatted
+*.min.js
