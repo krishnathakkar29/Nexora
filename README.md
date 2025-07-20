@@ -1,4 +1,4 @@
-# Nexora - Intelligent Document Processing & Communication Platform
+# Nexora
 
 A comprehensive full-stack application featuring AI-powered PDF chat, form management, bulk email processing, and real-time communication built with modern technologies and microservices architecture.
 
