@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
 	}
 
 	if (isAuthPath && isAuthenticated) {
-		return NextResponse.redirect(new URL('/dashboard', request.url));
+		return NextResponse.redirect(new URL('/mail/send-mail', request.url));
 	}
 
 	return NextResponse.next();

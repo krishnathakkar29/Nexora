@@ -313,7 +313,7 @@ function page() {
 							name="appusername"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Company Name</FormLabel>
+									<FormLabel>App Username</FormLabel>
 									<FormControl>
 										<Input {...field} placeholder="Enter App Username" />
 									</FormControl>
@@ -327,7 +327,7 @@ function page() {
 							name="apppassword"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Platform</FormLabel>
+									<FormLabel>App Password</FormLabel>
 									<FormControl>
 										<Input {...field} placeholder="Enter App Password" />
 									</FormControl>
